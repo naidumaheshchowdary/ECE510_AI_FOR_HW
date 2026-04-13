@@ -2,7 +2,7 @@
 
 **Portland State University | Spring2026 | Prof. Christof Teuscher**
 
-## Project Title : INT8 convolutional inference accelerator
+## Project Title : Softmax + LayerNorm fused accelerator
 
 **Author: Mahesh Naidu**
 
