@@ -1,39 +1,40 @@
 # Heilmeier Questions
+**Project:** Fused Softmax + LayerNorm Accelerator | **ECE 410/510 Spring 2026**
+
+---
 
 ## Q1: What are you trying to do?
-```
-Every time a transformer model processes a word or token, it runs two normalization steps back to back: softmax and layer normalization. These are not the exciting parts of the model - they are the cleanup work that happens after the attention computation and after the feed-forwardlayer. But they run on every single token, every single layer, every single inference call. 
 
-The problem is that today's software runs these two operations separately, which forces the processor to read the same data from memory six times just to normalize one row of numbers. That is wasteful. 
+Every transformer model — the kind that powers language translation, text prediction, and speech recognition — does a specific cleanup step after each attention calculation. This step involves two operations called softmax and layer normalization. Both operations read every number in a data array, do a small amount of arithmetic, then read the array again one or more times to finish the calculation. This back-and-forth is wasteful: the processor spends most of its time waiting for data to arrive from memory rather than actually computing anything useful.
 
-My project builds a small custom chip that does both operations in asingle pass it reads each number once, computes everything it needs on the fly, and writes the result once. The hardware pipeline runs at 200 MHz and finishes the job in a fraction of the time the software takes.
+The goal of this project is to build a small custom hardware chip (described in SystemVerilog and synthesized using the open-source OpenLane 2 tool) that reads each number exactly once and computes both softmax and layer normalization in a single streaming pass. The target outcome is a measurable reduction in the time spent on these two operations - from a combined 6.8 seconds per 100 training steps on a laptop CPU down to under 0.1 seconds — using a chip that connects to the host processor through a standard AXI4-Stream data interface.
 
-The target is a 3× or better speedup for the normalization step, using a design small enough to synthesize on the open-source SKY130 chip process with the OpenLane 2 tool.
-```
-## Q2: How is it done today and what are the limits?
-```
-Right now, this computation runs on a general-purpose CPU using plain Python and NumPy. I measured it directly using the professor's transformer code (no PyTorch, just Python arrays and math).
+---
 
-Here is what the measurement showed. For a matrix with 64 rows and 128 numbers per row, the unfused software pipeline takes about 452 microseconds and processes data at only 235 million floating point operations per second. That sounds fast in everyday terms, but it is actually very slow for the hardware -the CPU is spending most of its time waiting for data to come back from memory, not doing math.
+## Q2: How is it done today, and what are the limits of current practice?
 
-The reason is straightforward: the softmax function reads the data three separate times (once to find the maximum, once to compute exponentials, once to divide), and then layer normalization reads it three more times (once for the mean, once for the variance, once to normalize). Six total memory reads for a single normalization step is extremely inefficient.
+**Measured software baseline** (Intel i5-10210U, Python 3.11, FP64, 100 training steps on the professor's `transformer_lm` code):
 
-The fundamental limit is not the speed of the math - it is the number of trips to memory. The arithmetic intensity of this kernel is only 0.27 floating-point operations per byte of data moved, which puts it well below the threshold where the hardware is doing useful work rather than just waiting.
+| Function | Calls | Cumtime (s) | % of train() |
+|---|---|---|---|
+| `transformer.py:softmax` | 300 | 5.198 | ~8% |
+| `transformer.py:layer_norm_forward` | 500 | 1.626 | ~2.5% |
+| Combined | — | **6.824** | **~10.4%** |
 
-Existing solutions do not help much. General-purpose CPUs cannot skip these memory passes because they process each operation one at a time. GPU libraries like PyTorch can fuse these operations in software, but that requires a GPU and all the overhead that comes with it. There is no open source hardware implementation that runs on the open SKY130 chip process.
-```
+The current approach runs both functions sequentially on a general-purpose CPU using NumPy. Each function makes multiple passes over the same data: softmax requires a max-subtraction pass, an exp pass, a sum pass, and a division pass — four total reads
+of the input vector. Layer normalization similarly requires a mean pass, a variance pass, and a normalization pass. On the i5-10210U with 34.1 GB/s DRAM bandwidth and a ridge point of 1.36 FLOP/byte, the softmax arithmetic intensity is only **0.156 FLOP/byte**
+and layer norm is **0.200 FLOP/byte**. Both sit far to the left of the ridge point, meaning the CPU is almost entirely idle waiting for memory reads to complete.
+
+The fundamental limit is that a general-purpose CPU cannot eliminate these redundant memory passes because its instruction pipeline was not designed for single-pass streaming normalization. No open-source, synthesizable (OpenLane 2 / SKY130 compatible) fused
+accelerator for these two operations currently exists.
+
+---
+
 ## Q3: What is new in your approach and why will it succeed?
-```
-The core idea is simple: instead of reading the data six times, read it once. 
 
-This is possible because of a technique called the Welford online algorithm. Rather than computing the mean and variance in separate passes, Welford's method updates both values one element at a time as each number streams through. The same idea applies to softmax - there is an online version that tracks the running maximum and running sum simultaneously. Together, these two online algorithms let the hardware compute the complete normalized output without ever storing intermediate  results outside the chip.
+**What changed after profiling:** The profiling confirmed that softmax is the dominant forward-pass bottleneck at 8% of total runtime, but also revealed that `ff_forward` (GELU feed-forward, 26% of runtime) and `mha_forward` (matrix multiplications, 14%) are individually larger. However, those kernels involve large matrix multiplications that are harder to pipeline cleanly in a solo synthesizable design. The softmax + layernorm pair offers a better tradeoff: high call frequency (800 combined calls per 100 steps), pure streaming structure with no matrix dimensions, and a clean single-pass fusion opportunity.
 
-The effect on arithmetic intensity is significant. The unfused approach has an intensity of 0.27 operations per byte. The fused approach, by cutting memory traffic from six passes to one, raises that to 0.81 operations per byte. When the data is also quantized to 8-bit integers instead of 64-bit floats, it rises further to 6.5 operations per byte. That is a 24-fold improvement in how efficiently the hardware is used, just from these two changes.
+**The new approach** uses a Welford online algorithm to compute both softmax and layer norm statistics (mean, variance, running sum) in a single forward pass over the data. Instead of four separate memory reads, the hardware pipeline reads each element exactly once and produces the normalized output directly. This raises the effective arithmetic intensity from 0.156 F/B (softmax unfused) to approximately **0.367 F/B** (fused pipeline) — a 2.4× improvement purely from eliminating redundant memory traffic, with no change to the mathematical result.
 
-On the roofline model, this moves the kernel from the memory-bound region into the compute-bound region. That means the hardware can now run close to its peak throughput rather than sitting idle waiting for data.
-
-In terms of hardware, the design is an eight-stage pipeline. Each stage handles one part of the computation - finding the running maximum, computing the exponential approximation, summing, normalizing, tracking the mean and variance, and applying the final scaling. The pipeline processes one element per clock cycle. At 200 MHz with the target data size, the full computation finishes in about one microsecond, compared to 452 microseconds for the software baseline. 
-
-I think this will work for three reasons. First, the hardware is simple it is a pipeline of small arithmetic units, not a complex array of multipliers, so it is much more likely to synthesize cleanly. Second, the math is well-understood and the error from the 8-entry exponential lookup table is below 0.1%, which is acceptable for normalization in inference. Third, the design is deliberately scoped to one fixed operation with fixed dimensions, which makes timing closure and verification realistic within one term.
-
-```
+The design will succeed for three concrete reasons. First, the hardware is a simple 8-stage pipeline with no tiling or 2D spatial indexing — every stage processes one element per clock cycle, making timing closure straightforward in OpenLane 2 on SKY130.
+Second, the fused kernel's AI of 0.367 FLOP/byte sits near the ridge point of the target accelerator (0.39 FLOP/byte at 200 GOPS / 512 GB/s on-chip bandwidth), meaning the design is balanced and the compute utilization will be high. Third, the AXI4-Stream interface bandwidth needed is under 1 MB/s sustained — well within the capability of even a narrow 32-bit interface at 100 MHz — so the design will not be interface-bound.
