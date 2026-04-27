@@ -1,0 +1,66 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1110-g18392a46)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2009.vpi";
+S_0000021bc2822aa0 .scope package, "$unit" "$unit" 2 1;
+ .timescale 0 0;
+S_0000021bc2822c30 .scope module, "mac" "mac" 3 5;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "clk";
+    .port_info 1 /INPUT 1 "rst";
+    .port_info 2 /INPUT 8 "a";
+    .port_info 3 /INPUT 8 "b";
+    .port_info 4 /OUTPUT 32 "out";
+v0000021bc2823150_0 .net *"_ivl_0", 15 0, L_0000021bc29aae60;  1 drivers
+L_0000021bc289fc48 .functor BUFT 1, C4<00000000>, C4<0>, C4<0>, C4<0>;
+v0000021bc2822dc0_0 .net *"_ivl_3", 7 0, L_0000021bc289fc48;  1 drivers
+v0000021bc2822e60_0 .net *"_ivl_4", 15 0, L_0000021bc28518c0;  1 drivers
+L_0000021bc289fc90 .functor BUFT 1, C4<00000000>, C4<0>, C4<0>, C4<0>;
+v0000021bc29aaa00_0 .net *"_ivl_7", 7 0, L_0000021bc289fc90;  1 drivers
+o0000021bc2857098 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
+v0000021bc29aaaa0_0 .net "a", 7 0, o0000021bc2857098;  0 drivers
+o0000021bc28570c8 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
+v0000021bc29aab40_0 .net "b", 7 0, o0000021bc28570c8;  0 drivers
+o0000021bc28570f8 .functor BUFZ 1, C4<z>; HiZ drive
+v0000021bc29aabe0_0 .net "clk", 0 0, o0000021bc28570f8;  0 drivers
+v0000021bc29aac80_0 .var "out", 31 0;
+v0000021bc29aad20_0 .net "product", 15 0, L_0000021bc2851be0;  1 drivers
+o0000021bc2857188 .functor BUFZ 1, C4<z>; HiZ drive
+v0000021bc29aadc0_0 .net "rst", 0 0, o0000021bc2857188;  0 drivers
+E_0000021bc29ab580 .event posedge, v0000021bc29aabe0_0;
+L_0000021bc29aae60 .concat [ 8 8 0 0], o0000021bc2857098, L_0000021bc289fc48;
+L_0000021bc28518c0 .concat [ 8 8 0 0], o0000021bc28570c8, L_0000021bc289fc90;
+L_0000021bc2851be0 .arith/mult 16, L_0000021bc29aae60, L_0000021bc28518c0;
+    .scope S_0000021bc2822c30;
+T_0 ;
+    %wait E_0000021bc29ab580;
+    %load/vec4 v0000021bc29aadc0_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_0.0, 8;
+    %pushi/vec4 0, 0, 32;
+    %assign/vec4 v0000021bc29aac80_0, 0;
+    %jmp T_0.1;
+T_0.0 ;
+    %load/vec4 v0000021bc29aac80_0;
+    %load/vec4 v0000021bc29aad20_0;
+    %parti/s 1, 15, 5;
+    %replicate 16;
+    %load/vec4 v0000021bc29aad20_0;
+    %concat/vec4; draw_concat_vec4
+    %add;
+    %assign/vec4 v0000021bc29aac80_0, 0;
+T_0.1 ;
+    %jmp T_0;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "-";
+    "mac_llm_A.v";
