@@ -8,7 +8,7 @@
 | File          | Model              |
 |---------------|--------------------|
 | `mac_llm_A.v` | Claude Sonnet 4.6  |
-| `mac_llm_B.v` | GPT-4o             |
+| `mac_llm_B.v` | GPT-5.3             |
 | `mac_correct.v` | Claude Sonnet 4.6 (corrected) |
 
 ---
