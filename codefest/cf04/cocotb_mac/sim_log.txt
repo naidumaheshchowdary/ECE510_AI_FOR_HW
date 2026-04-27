@@ -1,0 +1,40 @@
+rm -f results.xml
+"make" -f Makefile results.xml
+make[1]: Entering directory '/content/cocotb_mac'
+mkdir -p sim_build
+/usr/bin/iverilog -o sim_build/sim.vvp -s mac -g2012 -g2012 -f sim_build/cmds.f  /content/mac_correct.v
+/usr/local/lib/python3.12/dist-packages/cocotb_tools/makefiles/simulators/Makefile.icarus:66: Using MODULE is deprecated, please use COCOTB_TEST_MODULES instead.
+rm -f results.xml
+COCOTB_TEST_MODULES=test_mac COCOTB_TESTCASE= COCOTB_TEST_FILTER= COCOTB_TOPLEVEL=mac TOPLEVEL_LANG=verilog \
+         /usr/bin/vvp -M /usr/local/lib/python3.12/dist-packages/cocotb/libs -m libcocotbvpi_icarus   sim_build/sim.vvp   
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /usr/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 11.0 (stable)
+     0.00ns WARNING  gpi                                vpi_iterate returned NULL for type vpiInstance for object NULL
+     0.00ns INFO     cocotb                             Seeding Python random module with 1777267327
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /usr/local/lib/python3.12/dist-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_mac.test_mac_basic (1/2)
+                                                            Basic MAC: a=3,b=4 x3 cycles, reset, a=-5,b=2 x2 cycles.
+    11.00ns INFO     cocotb.mac                         PASS: out = 12
+    21.00ns INFO     cocotb.mac                         PASS: out = 24
+    31.00ns INFO     cocotb.mac                         PASS: out = 36
+    41.00ns INFO     cocotb.mac                         PASS: reset -> out = 0
+    51.00ns INFO     cocotb.mac                         PASS: out = -10
+    61.00ns INFO     cocotb.mac                         PASS: out = -20
+    61.00ns INFO     cocotb.mac                         test_mac_basic: ALL PASSED
+    61.00ns INFO     cocotb.regression                  test_mac.test_mac_basic passed
+    61.00ns INFO     cocotb.regression                  running test_mac.test_mac_overflow (2/2)
+                                                            Overflow test: accumulate until 32-bit signed wraps. Documents wrap behavior.
+1331522.00ns WARNING  cocotb.mac                         OVERFLOW at cycle 133145: prev=2147479576, cur=-2147471591 -- WRAP (two's complement, no saturation)
+1331522.00ns INFO     cocotb.mac                         RESULT: accumulator WRAPS (two's complement rollover). No saturation.
+1331522.00ns INFO     cocotb.regression                  test_mac.test_mac_overflow passed
+1331522.00ns INFO     cocotb.regression                  **************************************************************************************
+                                                         ** TEST                          STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                         **************************************************************************************
+                                                         ** test_mac.test_mac_basic        PASS          61.00           0.00      16606.25  **
+                                                         ** test_mac.test_mac_overflow     PASS     1331461.00          17.63      75523.77  **
+                                                         **************************************************************************************
+                                                         ** TESTS=2 PASS=2 FAIL=0 SKIP=0            1331522.00          17.64      75495.86  **
+                                                         **************************************************************************************
+make[1]: Leaving directory '/content/cocotb_mac'
