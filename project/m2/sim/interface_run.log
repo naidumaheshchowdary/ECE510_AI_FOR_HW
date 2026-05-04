@@ -8,11 +8,11 @@
   PASS: PRECISION=0 (INT8)
   T4: AXI4-Lite write/read CTRL[0]=1 (start)...
   PASS: CTRL start bit reads back 1
-  T5/T6: AXI4-Stream — stream 64-element row...
+  T5/T6: AXI4-Stream ΓÇö stream 64-element row...
   PASS: AXI4-Stream output valid appeared
   PASS: AXI4-Stream tlast seen via interface
   INFO: STATUS[2]=0 (done may have deasserted by read time)
 
 === RESULT: 8 checks passed, 0 failed ===
 PASS: tb_interface
-/home/claude/tb_interface_final.sv:229: $finish called at 426000 (1ps)
+m2\tb\tb_interface.sv:229: $finish called at 426000 (1ps)
