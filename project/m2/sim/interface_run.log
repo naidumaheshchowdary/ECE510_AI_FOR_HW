@@ -1,0 +1,18 @@
+=== tb_interface: AXI4-Lite + AXI4-Stream Interface ===
+  T1: AXI4-Lite write/read CFG_D=64...
+  PASS: write response OKAY
+  PASS: CFG_D reads back 64
+  T2: AXI4-Lite write/read CFG_T=64...
+  PASS: CFG_T reads back 64
+  T3: AXI4-Lite write/read PRECISION=0 (INT8)...
+  PASS: PRECISION=0 (INT8)
+  T4: AXI4-Lite write/read CTRL[0]=1 (start)...
+  PASS: CTRL start bit reads back 1
+  T5/T6: AXI4-Stream — stream 64-element row...
+  PASS: AXI4-Stream output valid appeared
+  PASS: AXI4-Stream tlast seen via interface
+  INFO: STATUS[2]=0 (done may have deasserted by read time)
+
+=== RESULT: 8 checks passed, 0 failed ===
+PASS: tb_interface
+/home/claude/tb_interface_final.sv:229: $finish called at 426000 (1ps)
