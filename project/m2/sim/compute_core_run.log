@@ -14,9 +14,9 @@
   cycle 5: tdata=0x0404040404040404 tlast=0 done=0
   cycle 6: tdata=0x0000000000000000 tlast=1 done=0
   PASS: output valid observed within timeout
-  PASS: tlast seen — full row propagated through pipeline
+  PASS: tlast seen ΓÇö full row propagated through pipeline
   PASS: done asserted one cycle after tlast
 
 === RESULT: 5 checks passed, 0 failed ===
 PASS: tb_compute_core
-/home/claude/tb_compute_core_final.sv:164: $finish called at 206000 (1ps)
+m2\tb\tb_compute_core.sv:164: $finish called at 206000 (1ps)
