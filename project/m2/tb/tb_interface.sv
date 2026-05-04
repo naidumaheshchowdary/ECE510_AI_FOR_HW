@@ -26,40 +26,40 @@ module tb_interface;
     localparam BEATS    = 8;
     localparam TIMEOUT  = 80;
 
-    reg         clk = 0;
-    reg         rst_n = 0;
+    logic        clk = 0;
+    logic        rst_n = 0;
 
     // AXI4-Lite
-    reg  [5:0]  s_axil_awaddr  = 0;
-    reg         s_axil_awvalid = 0;
-    wire        s_axil_awready;
-    reg  [31:0] s_axil_wdata   = 0;
-    reg  [3:0]  s_axil_wstrb   = 4'hF;
-    reg         s_axil_wvalid  = 0;
-    wire        s_axil_wready;
-    wire [1:0]  s_axil_bresp;
-    wire        s_axil_bvalid;
-    reg         s_axil_bready  = 1;
-    reg  [5:0]  s_axil_araddr  = 0;
-    reg         s_axil_arvalid = 0;
-    wire        s_axil_arready;
-    wire [31:0] s_axil_rdata;
-    wire [1:0]  s_axil_rresp;
-    wire        s_axil_rvalid;
-    reg         s_axil_rready  = 1;
+    logic [5:0]  s_axil_awaddr  = 0;
+    logic        s_axil_awvalid = 0;
+    logic        s_axil_awready;
+    logic [31:0] s_axil_wdata   = 0;
+    logic [3:0]  s_axil_wstrb   = 4'hF;
+    logic        s_axil_wvalid  = 0;
+    logic        s_axil_wready;
+    logic [1:0]  s_axil_bresp;
+    logic        s_axil_bvalid;
+    logic        s_axil_bready  = 1;
+    logic [5:0]  s_axil_araddr  = 0;
+    logic        s_axil_arvalid = 0;
+    logic        s_axil_arready;
+    logic [31:0] s_axil_rdata;
+    logic [1:0]  s_axil_rresp;
+    logic        s_axil_rvalid;
+    logic        s_axil_rready  = 1;
 
     // AXI4-Stream
-    reg  [63:0] s_axis_tdata  = 0;
-    reg         s_axis_tvalid = 0;
-    reg         s_axis_tlast  = 0;
-    wire        s_axis_tready;
-    wire [63:0] m_axis_tdata;
-    wire        m_axis_tvalid;
-    wire        m_axis_tlast;
-    reg         m_axis_tready = 1;
+    logic [63:0] s_axis_tdata  = 0;
+    logic        s_axis_tvalid = 0;
+    logic        s_axis_tlast  = 0;
+    logic        s_axis_tready;
+    logic [63:0] m_axis_tdata;
+    logic        m_axis_tvalid;
+    logic        m_axis_tlast;
+    logic        m_axis_tready = 1;
 
     interface_mod #(.D(64), .T(64)) dut (
-        .clk            (clk),            .rst_n          (rst_n),
+        .clk            (clk), .rst_n         (rst_n),
         .s_axil_awaddr  (s_axil_awaddr),  .s_axil_awvalid (s_axil_awvalid),
         .s_axil_awready (s_axil_awready),
         .s_axil_wdata   (s_axil_wdata),   .s_axil_wstrb   (s_axil_wstrb),
@@ -78,16 +78,16 @@ module tb_interface;
 
     always #CLK_HALF clk = ~clk;
 
-    reg [31:0] rval;
+    logic [31:0] rval;
     integer fail = 0, pass = 0, beat, b, cycle;
-    reg [63:0] bval;
-    reg out_s, lst_s;
-    integer k;
+    logic [63:0] bval;
+    logic out_s, lst_s;
 
     // AXI4-Lite write: assert addr+data, wait for bvalid
     task do_write;
         input [5:0]  addr;
         input [31:0] data;
+        integer k;
         begin
             @(posedge clk); #1;
             s_axil_awaddr  = addr;  s_axil_awvalid = 1'b1;
