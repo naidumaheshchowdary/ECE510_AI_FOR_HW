@@ -1,0 +1,22 @@
+=== tb_compute_core: Fused Softmax+LayerNorm Pipeline ===
+    Input  : 8 beats x 8 INT8 bytes = 64 elements (ramp 1..8)
+    Ref    : Python numpy softmax+layernorm (see precision.md)
+    Expect : tlast exits pipeline after 8-cycle latency
+  PASS: m_axis_tvalid=0 after reset
+  PASS: s_axis_tready=1 after reset
+  Driving 8 beats (64 INT8 elements, values 1..8 each byte)...
+  First output at cycle 0
+  cycle 0: tdata=0x0f0f0f0f0f0f0f0f tlast=0 done=0
+  cycle 1: tdata=0x0a0a0a0a0a0a0a0a tlast=0 done=0
+  cycle 2: tdata=0x0707070707070707 tlast=0 done=0
+  cycle 3: tdata=0x0606060606060606 tlast=0 done=0
+  cycle 4: tdata=0x0505050505050505 tlast=0 done=0
+  cycle 5: tdata=0x0404040404040404 tlast=0 done=0
+  cycle 6: tdata=0x0000000000000000 tlast=1 done=0
+  PASS: output valid observed within timeout
+  PASS: tlast seen — full row propagated through pipeline
+  PASS: done asserted one cycle after tlast
+
+=== RESULT: 5 checks passed, 0 failed ===
+PASS: tb_compute_core
+/home/claude/tb_compute_core_final.sv:164: $finish called at 206000 (1ps)
