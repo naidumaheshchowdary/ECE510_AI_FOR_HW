@@ -28,21 +28,21 @@ module tb_compute_core;
     localparam BEATS    = 8;
     localparam TIMEOUT  = 50;
 
-    reg         clk           = 0;
-    reg         rst_n         = 0;
-    reg  [63:0] s_axis_tdata  = 0;
-    reg         s_axis_tvalid = 0;
-    reg         s_axis_tlast  = 0;
-    wire        s_axis_tready;
-    wire [63:0] m_axis_tdata;
-    wire        m_axis_tvalid;
-    wire        m_axis_tlast;
-    reg         m_axis_tready = 1;
-    reg  [7:0]  cfg_d         = 8'd64;
-    reg  [7:0]  cfg_t         = 8'd64;
-    reg         precision     = 1'b0;
-    reg         start         = 1'b1;
-    wire        done;
+    logic        clk           = 0;
+    logic        rst_n         = 0;
+    logic [63:0] s_axis_tdata  = 0;
+    logic        s_axis_tvalid = 0;
+    logic        s_axis_tlast  = 0;
+    logic        s_axis_tready;
+    logic [63:0] m_axis_tdata;
+    logic        m_axis_tvalid;
+    logic        m_axis_tlast;
+    logic        m_axis_tready = 1;
+    logic [7:0]  cfg_d         = 8'd64;
+    logic [7:0]  cfg_t         = 8'd64;
+    logic        precision     = 1'b0;
+    logic        start         = 1'b1;
+    logic        done;
 
     compute_core #(.D(64), .T(64), .PIPE_DEPTH(8)) dut (
         .clk           (clk),
@@ -67,8 +67,8 @@ module tb_compute_core;
     integer fail = 0;
     integer pass = 0;
     integer beat, b, cycle;
-    reg [63:0] bval;
-    reg out_seen, last_seen;
+    logic [63:0] bval;
+    logic out_seen, last_seen;
 
     initial begin
         $display("=== tb_compute_core: Fused Softmax+LayerNorm Pipeline ===");
@@ -94,7 +94,7 @@ module tb_compute_core;
             $display("  FAIL: s_axis_tready should be 1"); fail = fail + 1;
         end
 
-        // Drive 8 beats: ramp pattern
+        // Drive 8 beats: ramp pattern — non-trivial INT8 activation data
         $display("  Driving 8 beats (64 INT8 elements, values 1..8 each byte)...");
         for (beat = 0; beat < BEATS; beat = beat + 1) begin
             bval = 64'd0;
@@ -119,7 +119,7 @@ module tb_compute_core;
                 out_seen = 1'b1;
                 $display("  cycle %0d: tdata=0x%016H tlast=%0b done=%0b",
                          cycle, m_axis_tdata, m_axis_tlast, done);
-
+                
                 if (m_axis_tlast === 1'b1) begin
                     last_seen = 1'b1;
                     cycle = TIMEOUT;
@@ -145,7 +145,7 @@ module tb_compute_core;
             fail = fail + 1;
         end
 
-        // Check 5: done asserted one cycle after tlast exits pipeline
+        // Check 5: done asserted (registered one cycle after tlast exits pipeline)
         @(posedge clk); #1;
         if (done === 1'b1) begin
             $display("  PASS: done asserted one cycle after tlast");
