@@ -1,156 +1,123 @@
-# CMAN — Sneak Paths in a Resistive Crossbar
-**ECE 410/510 — Spring 2026 — Codefest 6**
+# CF06 - CMAN: Sneak Paths in a Resistive Crossbar
+ECE 410/510, Spring 2026
 
 ---
 
-## Circuit Setup
+## Setup
 
-2×2 resistive crossbar with fixed cell resistances:
+The crossbar is 2x2. Row 0 gets 1V applied, col 0 is held at 0V for current
+sensing. The four cell resistances are:
 
-| Cell     | Resistance | Weight |
-|----------|-----------|--------|
-| R[0][0]  | 1 kΩ      | ON     |
-| R[0][1]  | 2 kΩ      | OFF    |
-| R[1][0]  | 2 kΩ      | OFF    |
-| R[1][1]  | 1 kΩ      | ON     |
-
-- Rows carry input voltages; columns carry output currents.
-- V_row0 = 1 V (driven), V_col0 = 0 V (virtual ground / sense)
+- R[0][0] = 1 kΩ  (on)
+- R[0][1] = 2 kΩ  (off)
+- R[1][0] = 2 kΩ  (off)
+- R[1][1] = 1 kΩ  (on)
 
 ---
 
-## (a) Ideal Read — I_col0
+## (a) Ideal Read
 
-**Conditions:** V_row0 = 1 V, V_col0 = 0 V, V_row1 = 0 V, V_col1 = 0 V (all grounded except row 0)
+For the ideal case, row 1 and col 1 are both grounded. So the only thing
+driving current into col 0 is row 0 through R[0][0]. R[1][0] has 0V on both
+ends so it contributes nothing.
 
-With row1 and col1 grounded, only R[0][0] connects V_row0 to col0.
-R[1][0] connects row1 (0 V) to col0 (0 V) - zero voltage drop, zero current.
+Just Ohm's law:
 
-**Calculation:**
-
-```
-I_col0 = (V_row0 - V_col0) / R[0][0]
-       = (1 V - 0 V) / 1000 Ω
-       = 1 mA
-```
-
-**Ideal I_col0 = 1 mA**
+    I_col0 = (V_row0 - V_col0) / R[0][0]
+           = (1 - 0) / 1000
+           = 1 mA
 
 ---
 
-## (b) KCL Solution - Floating Node Voltages V_row1 and V_col1
+## (b) Sneak Path - Finding V_row1 and V_col1
 
-**Conditions:** V_row0 = 1 V, V_col0 = 0 V, V_row1 = floating, V_col1 = floating
+Now row 1 and col 1 are left floating. That means no external current is
+forced into or out of those nodes, so by KCL the currents through the
+resistors at each floating node have to balance to zero.
 
-Since row1 and col1 are undriven (floating), no current can enter or leave
-those nodes externally. By KCL, the sum of currents at each floating node = 0.
+I'll call the two unknowns V_row1 and V_col1.
 
-### KCL at V_row1:
+**KCL at V_row1:**
 
-Currents leaving V_row1 through R[1][0] and R[1][1] must sum to zero:
+Row 1 connects to col 0 (0V) through R[1][0] = 2k, and to col 1 through
+R[1][1] = 1k. Since the node is floating, those two currents must cancel:
 
-```
-(V_row1 - V_col0) / R[1][0]  +  (V_row1 - V_col1) / R[1][1]  =  0
+    (V_row1 - 0) / 2k  +  (V_row1 - V_col1) / 1k  =  0
 
-(V_row1 - 0) / 2k  +  (V_row1 - V_col1) / 1k  =  0
-```
+Multiply everything by 2k to clear the fractions:
 
-Multiply through by 2k:
+    V_row1 + 2(V_row1 - V_col1) = 0
+    3*V_row1 - 2*V_col1 = 0   ... (1)
 
-```
-V_row1  +  2(V_row1 - V_col1)  =  0
-3·V_row1  -  2·V_col1  =  0   ... (Equation 1)
-```
+**KCL at V_col1:**
 
-### KCL at V_col1:
+Col 1 sees current coming in from row 0 through R[0][1] = 2k, and from
+row 1 through R[1][1] = 1k. Same deal - floating node, so they sum to zero:
 
-Currents flowing into V_col1 from V_row0 (through R[0][1]) and from V_row1
-(through R[1][1]) must sum to zero:
+    (1 - V_col1) / 2k  +  (V_row1 - V_col1) / 1k  =  0
 
-```
-(V_row0 - V_col1) / R[0][1]  +  (V_row1 - V_col1) / R[1][1]  =  0
+Multiply by 2k:
 
-(1 - V_col1) / 2k  +  (V_row1 - V_col1) / 1k  =  0
-```
+    (1 - V_col1) + 2(V_row1 - V_col1) = 0
+    2*V_row1 - 3*V_col1 = -1   ... (2)
 
-Multiply through by 2k:
+**Solving (1) and (2):**
 
-```
-(1 - V_col1)  +  2(V_row1 - V_col1)  =  0
-2·V_row1  -  3·V_col1  =  -1          ... (Equation 2)
-```
+From (1):  V_row1 = (2/3) * V_col1
 
-### Solving the system:
+Plug into (2):
 
-From Equation 1:
-```
-V_row1 = (2/3) · V_col1
-```
+    2*(2/3)*V_col1 - 3*V_col1 = -1
+    (4/3 - 9/3)*V_col1 = -1
+    (-5/3)*V_col1 = -1
+    V_col1 = 3/5 = 0.6 V
 
-Substitute into Equation 2:
-```
-2 · (2/3) · V_col1  -  3 · V_col1  =  -1
-(4/3) · V_col1  -  3 · V_col1      =  -1
-(4/3 - 9/3) · V_col1               =  -1
-(-5/3) · V_col1                     =  -1
+Then:  V_row1 = (2/3) * 0.6 = 0.4 V
 
-V_col1 = 3/5 = 0.6 V
-V_row1 = (2/3) × 0.6 = 0.4 V
-```
-
-**V_col1 = 0.6 V**
-**V_row1 = 0.4 V**
+So the floating nodes settle at **V_row1 = 0.4 V** and **V_col1 = 0.6 V**.
 
 ---
 
-## (c) Actual I_col0 with Sneak Path Current Itemized
+## (c) Actual I_col0 with Sneak Path
 
-Col0 is held at 0 V. Two resistors connect to col0:
+Col 0 is at 0V. Two resistors dump current into it now - R[0][0] from row 0,
+and R[1][0] from the floating row 1 which ended up at 0.4V.
 
-### Direct path (intended):
-```
-I_direct = (V_row0 - V_col0) / R[0][0]
-         = (1 V - 0 V) / 1 kΩ
-         = 1.0 mA
-```
+Direct path (what we want):
 
-### Sneak path (unintended):
-```
-I_sneak  = (V_row1 - V_col0) / R[1][0]
-         = (0.4 V - 0 V) / 2 kΩ
-         = 0.2 mA
-```
+    I_direct = (1 - 0) / 1k = 1.0 mA
 
-### Total actual current:
-```
-I_col0_actual = I_direct + I_sneak
-              = 1.0 mA + 0.2 mA
-              = 1.2 mA
-```
+Sneak path (what we don't want):
 
-| Path        | Current  | Description                        |
-|-------------|----------|------------------------------------|
-| Direct      | 1.0 mA   | V_row0 → R[0][0] → col0  (correct) |
-| Sneak       | 0.2 mA   | V_row1 → R[1][0] → col0  (error)   |
-| **Total**   | **1.2 mA** | **20% error over ideal**         |
+    I_sneak = (0.4 - 0) / 2k = 0.2 mA
+
+Total current sensed at col 0:
+
+    I_col0 = 1.0 + 0.2 = 1.2 mA
+
+The sneak path adds 0.2 mA that shouldn't be there — that's a 20% error
+over the ideal 1 mA.
 
 ---
 
-## (d) How Sneak Paths Corrupt MVM Results
+## (d) Why This Corrupts MVM and What It Means for Large Arrays
 
-In a resistive crossbar MVM, the output current on each column is supposed to
-represent the dot product of the input voltage vector with the column's weight
-vector. Sneak paths create unintended current loops through floating rows and
-columns — current from an active row leaks through off-state cells into floating
-nodes and then back into the sense column through a different resistor, adding
-spurious current that was never part of the intended computation. In large
-crossbar arrays this effect worsens significantly because every additional row
-and column adds more parallel sneak-path routes, causing output currents to
-deviate further from their ideal values and making it impossible to distinguish
-correct MVM results from noise without active mitigation such as selector devices
-(e.g. transistors or diodes) at each cell.
+The whole point of the crossbar is that the current on each output column
+equals the dot product of the input voltages with that column's conductances.
+Sneak paths break this because a floating row picks up voltage through the
+off-state cells connected to the driven row, and that voltage then drives
+extra current back into the sense column through a completely different path.
+The sensed current no longer reflects only the intended weight — it picks up
+contributions from cells that were supposed to be off.
+
+In a large array this gets much worse. Every additional row that's floating
+adds another sneak path route, and those paths combine in parallel so the
+error current grows with array size. A 128x128 crossbar could have hundreds
+of sneak paths all summing into one column at once, completely overwhelming
+the real signal. This is why practical crossbar designs use a selector element
+(a transistor or diode) at each cell - to block current from flowing unless
+that specific row is being actively driven.
 
 ---
 
-*ECE 410/510 Spring 2026 — Codefest 6 — CMAN (No AI)*
-
+*Codefest 6, ECE 410/510 Spring 2026*
