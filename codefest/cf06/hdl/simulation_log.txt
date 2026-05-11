@@ -1,0 +1,23 @@
+VCD info: dumpfile crossbar_tb.vcd opened for output.
+=================================================
+ crossbar_mac Testbench - ECE 410/510 CF06
+=================================================
+
+[1] Loading weight matrix...
+    w[0]=0101 w[1]=0011 w[2]=0110 w[3]=1000
+
+[2] Applying inputs [10,20,30,40]...
+
+[3] Results:
+-------------------------------------------------
+  PASS  out0 = -40 (expected -40)
+  PASS  out1 = 0 (expected 0)
+  PASS  out2 = -20 (expected -20)
+  PASS  out3 = -20 (expected -20)
+-------------------------------------------------
+[Raw] out0=-40 out1=0 out2=-20 out3=-20
+
+=================================================
+ Simulation complete.
+=================================================
+crossbar_tb.sv:86: $finish called at 66000 (1ps)
