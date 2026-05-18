@@ -1,5 +1,38 @@
+=== AREA REPORT ===
+Tool   : Yosys 0.9 (git sha1 1979e0b)
+Target : SKY130 HD (generic gate mapping -- no liberty area values)
+Module : synth_top
 
-22. Printing statistics.
+NOTE: Chip area = 0 because Yosys 0.9 on Colab used generic ABC gates,
+      not SKY130 liberty cells. Area requires OpenLane 2 full flow (M3).
+      Estimated area from cell count: 3000--5000 um^2.
+
+=== stat (pre-map, after opt_clean) ===
+
+=== synth_top ===
+
+   Number of wires:                114
+   Number of wire bits:           1831
+   Number of public wires:          60
+   Number of public wire bits:     994
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 92
+     $add                            8
+     $adff                          27
+     $and                            1
+     $div                            8
+     $gt                             9
+     $logic_and                      1
+     $mem                            1
+     $mul                            8
+     $mux                           26
+     $not                            1
+     $or                             1
+     $reduce_bool                    1
+
+=== stat (post-map, final) ===
 
 === synth_top ===
 
@@ -25,3 +58,17 @@
      $reduce_bool                    1
      $xor                            2
 
+Chip area for module \synth_top: 0.000000
+(SKY130 liberty not loaded -- area unavailable in Yosys 0.9 generic flow)
+
+=== AREA ESTIMATE (manual) ===
+Based on SKY130 HD typical cell sizes at TT/25C/1.8V:
+  $adff  x27  ~  8 um^2 each  =  216 um^2
+  $mux   x26  ~  4 um^2 each  =  104 um^2
+  $div   x8   ~ 300 um^2 each = 2400 um^2  (dominant)
+  $alu   x9   ~ 40 um^2 each  =  360 um^2
+  $macc  x9   ~ 50 um^2 each  =  450 um^2
+  Other  x10  ~ 4 um^2 each   =   40 um^2
+                              -----------
+  Total estimate               = 3570 um^2
+  (range: 3000--5000 um^2 depending on place-and-route)
