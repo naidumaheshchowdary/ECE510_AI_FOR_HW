@@ -1,2 +1,20 @@
-design__instance__count,design__instance__count__stdcell,design__die__bbox,design__core__bbox,synthesis__check_error__count,synthesis__check_warning__count,design__instance__area,clock__period,clock__skew
-0,0,0 0 1000 1000,0 0 1000 1000,0,7235,0,5.0,0.1
+metric,value
+tool__yosys__version,Yosys 0.9 (git sha1 1979e0b)
+design__instance__count__total,92
+design__instance__count__dff,27
+design__instance__count__mux,26
+design__instance__count__mul,8
+design__instance__count__div,8
+design__instance__count__add,8
+design__instance__count__gt,9
+design__wire__count,114
+design__wire_bits__count,1831
+design__public_wire__count,60
+design__public_wire_bits__count,994
+synthesis__check_warning__count__unique,214
+synthesis__check_warning__count__total,7234
+synthesis__check_error__count,0
+design__instance__area,0
+clock__period__ns,5.0
+clock__target__mhz,200
+pdk,SKY130 HD (generic mapping — abc fallback in Yosys 0.9)
