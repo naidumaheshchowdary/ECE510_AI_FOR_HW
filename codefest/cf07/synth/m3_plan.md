@@ -1,16 +1,28 @@
+# M3 Synthesis Plan
+## ECE 410/510 HW4AI | Spring 2026 | CF07 CLLM
+## Project: Fused Softmax + Layer Normalization Accelerator
 
-# M3 Plan
-ECE 410/510 - Codefest 7 | synth_top (compute_core)
+---
 
-## What I will fix before M3
+## Plan for Milestone 3 (due May 24)
 
-Fix 1 - Break the tready combinational loop (highest priority).
-The s_axis_tready assignment reads pipe_valid[0] inside a combinational block that feeds back into the S1 clocked block. I will register tready one cycle earlier using pipe_valid[1] instead, which eliminates the loop and unblocks the LTP timing analysis entirely.
+**1. Replace S5 division with reciprocal multiply (highest priority)**
+The 8 `$div` cells are the critical path bottleneck. Each
+`({16'd0,eb} * 255) / running_sum` will be replaced with a pre-computed
+reciprocal: `recip = 65536 / running_sum` (16-bit fixed-point), then
+`out = (eb * recip) >> 8`. This eliminates all 8 `$div` cells and reduces
+the critical path to a single multiply-shift chain.
 
-Fix 2 - Replace $div with multiply-by-reciprocal.
-The 8 unrolled $div cells in S5 are not mappable to SKY130 primitives and will explode into large combinational trees. Since running_sum is bounded to 8 x 255 = 2040 max, I will precompute a small reciprocal LUT (11 entries, one per possible sum) and replace each divide with a LUT lookup and a multiply, dropping the 8 $div cells entirely and making the path synthesizable.
+**2. Relax clock target to 100 MHz (10 ns period)**
+Yosys 0.9 produced 92 cells with 8 dividers. At 200 MHz the `$div` path
+will not close timing on SKY130 HD. Dropping to 100 MHz gives 2× slack
+budget and allows the dividers to be replaced iteratively in M3.
 
-Fix 3 - Obtain a working SKY130 liberty file.
-I will pull the liberty file from the official google/skywater-pdk release on GitHub rather than the mirror that failed, so abc can complete technology mapping and produce real area and slack numbers for M3.
+**3. Fix signed/unsigned width mismatches (214 unique warnings)**
+The Welford stages S6/S7 mix `$signed(welford_mean)` with unsigned
+`pipe_data` bytes. Each mismatch will be resolved with explicit casts
+to eliminate the 7,234 warnings before OpenLane 2 full flow.
 
-Target clock for M3: start at 5 ns (200 MHz) and tighten to 4 ns if slack allows after the divide fix.
+**4. Use OpenLane 2 with proper SKY130 liberty (not Yosys 0.9 generic)**
+M3 will use OpenLane 2 Docker image to get real cell area, formal slack,
+and power estimates that Yosys 0.9 could not produce.
