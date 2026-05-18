@@ -1,0 +1,27 @@
+
+22. Printing statistics.
+
+=== synth_top ===
+
+   Number of wires:                129
+   Number of wire bits:           1829
+   Number of public wires:          59
+   Number of public wire bits:     979
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 89
+     $adff                          27
+     $alu                            9
+     $and                            1
+     $div                            8
+     $logic_and                      1
+     $macc                           9
+     $mem                            1
+     $mux                           26
+     $not                            1
+     $or                             2
+     $reduce_and                     1
+     $reduce_bool                    1
+     $xor                            2
+
