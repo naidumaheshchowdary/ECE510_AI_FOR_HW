@@ -9,68 +9,53 @@ module synth_top(clk, rst_n, s_axis_tdata, s_axis_tvalid, s_axis_tlast, s_axis_t
   wire _005_;
   wire [15:0] _006_;
   wire [23:0] _007_;
-  wire [23:0] _008_;
-  wire [15:0] _009_;
-  wire [2:0] _010_;
-  wire [2:0] _011_;
-  wire [2:0] _012_;
-  wire [2:0] _013_;
-  wire [2:0] _014_;
-  wire [2:0] _015_;
-  wire [2:0] _016_;
-  wire [2:0] _017_;
-  wire [2:0] _018_;
-  wire [2:0] _019_;
-  wire [2:0] _020_;
-  wire [2:0] _021_;
-  wire [2:0] _022_;
-  wire [2:0] _023_;
-  wire [2:0] _024_;
-  wire [2:0] _025_;
-  wire [15:0] _026_;
-  wire [2:0] _027_;
-  wire [2:0] _028_;
-  wire [2:0] _029_;
-  wire [2:0] _030_;
-  wire [2:0] _031_;
-  wire [2:0] _032_;
-  wire [2:0] _033_;
-  wire [2:0] _034_;
-  wire [15:0] _035_;
+  wire [8:0] _008_;
+  wire [9:0] _009_;
+  wire [10:0] _010_;
+  wire [23:0] _011_;
+  wire [23:0] _012_;
+  wire [23:0] _013_;
+  wire [23:0] _014_;
+  wire [23:0] _015_;
+  wire [23:0] _016_;
+  wire [23:0] _017_;
+  wire [23:0] _018_;
+  wire [23:0] _019_;
+  wire [23:0] _020_;
+  wire [23:0] _021_;
+  wire [23:0] _022_;
+  wire [23:0] _023_;
+  wire [23:0] _024_;
+  wire [23:0] _025_;
+  wire [23:0] _026_;
+  wire [23:0] _027_;
+  wire [23:0] _028_;
+  wire [23:0] _029_;
+  wire [23:0] _030_;
+  wire _031_;
+  wire _032_;
+  wire _033_;
+  wire _034_;
+  wire _035_;
   wire _036_;
   wire _037_;
   wire _038_;
   wire _039_;
-  wire [23:0] _040_;
-  wire [23:0] _041_;
-  wire [23:0] _042_;
-  wire [23:0] _043_;
-  wire [23:0] _044_;
-  wire [23:0] _045_;
-  wire [23:0] _046_;
-  wire [23:0] _047_;
-  wire [23:0] _048_;
-  wire [23:0] _049_;
-  wire [23:0] _050_;
-  wire [23:0] _051_;
-  wire [23:0] _052_;
+  wire _040_;
+  wire _041_;
+  wire _042_;
+  wire [15:0] _043_;
+  wire [15:0] _044_;
+  wire [2:0] _045_;
+  wire [2:0] _046_;
+  wire [2:0] _047_;
+  wire [2:0] _048_;
+  wire [2:0] _049_;
+  wire [2:0] _050_;
+  wire [2:0] _051_;
+  wire [2:0] _052_;
   wire [23:0] _053_;
-  wire [23:0] _054_;
-  wire [23:0] _055_;
-  wire _056_;
-  wire _057_;
-  wire _058_;
-  wire [15:0] _059_;
-  wire [15:0] _060_;
-  wire [2:0] _061_;
-  wire [2:0] _062_;
-  wire [2:0] _063_;
-  wire [2:0] _064_;
-  wire [2:0] _065_;
-  wire [2:0] _066_;
-  wire [2:0] _067_;
-  wire [2:0] _068_;
-  wire [23:0] _069_;
+  wire [14:0] beat_sum;
   wire [7:0] byte0;
   wire [7:0] byte1;
   wire [7:0] byte2;
@@ -131,257 +116,44 @@ module synth_top(clk, rst_n, s_axis_tdata, s_axis_tvalid, s_axis_tlast, s_axis_t
   output s_axis_tready;
   input s_axis_tvalid;
   input start;
+  assign _008_ = \pipe_data[2] [7:0] + \pipe_data[2] [15:8];
+  assign _009_ = _008_ + \pipe_data[2] [23:16];
+  assign _010_ = _009_ + \pipe_data[2] [31:24];
+  assign _011_[11:0] = _010_ + \pipe_data[2] [39:32];
+  assign _012_[12:0] = _011_[11:0] + \pipe_data[2] [47:40];
+  assign _013_[13:0] = _012_[12:0] + \pipe_data[2] [55:48];
+  assign beat_sum = _013_[13:0] + \pipe_data[2] [63:56];
+  assign _014_ = running_sum + beat_sum;
   assign _000_ = \pipe_valid[7]  & \pipe_last[7] ;
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _071_ (
-    .A({ 8'hff, \pipe_data[3] [7:0] }),
-    .B(),
-    .Y(_040_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd88),
-    .B_WIDTH(32'd0),
-    .CONFIG(112'h0200200200200200200200200605),
-    .CONFIG_WIDTH(32'd112),
-    .Y_WIDTH(32'd24)
-  ) _072_ (
-    .A({ \pipe_data[2] [15:8], \pipe_data[2] [23:16], \pipe_data[2] [31:24], \pipe_data[2] [39:32], \pipe_data[2] [47:40], \pipe_data[2] [55:48], \pipe_data[2] [63:56], \pipe_data[2] [7:0], running_sum }),
-    .B(),
-    .Y(_008_)
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _073_ (
-    .A({ 8'hff, \pipe_data[3] [15:8] }),
-    .B(),
-    .Y(_041_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _074_ (
-    .A({ 8'hff, \pipe_data[3] [23:16] }),
-    .B(),
-    .Y(_042_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _075_ (
-    .A({ 8'hff, \pipe_data[3] [31:24] }),
-    .B(),
-    .Y(_043_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _076_ (
-    .A({ 8'hff, \pipe_data[3] [39:32] }),
-    .B(),
-    .Y(_044_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _077_ (
-    .A({ 8'hff, \pipe_data[3] [47:40] }),
-    .B(),
-    .Y(_045_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _078_ (
-    .A({ 8'hff, \pipe_data[3] [55:48] }),
-    .B(),
-    .Y(_046_[15:0])
-  );
-  \$macc  #(
-    .A_WIDTH(32'd16),
-    .B_WIDTH(32'd0),
-    .CONFIG(14'h2204),
-    .CONFIG_WIDTH(32'd14),
-    .Y_WIDTH(32'd16)
-  ) _079_ (
-    .A({ 8'hff, \pipe_data[3] [63:56] }),
-    .B(),
-    .Y(_047_[15:0])
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _080_ (
-    .A(\pipe_data[1] [58:56]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_027_),
-    .X(_018_),
-    .Y(_017_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _081_ (
-    .A(\pipe_data[1] [50:48]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_028_),
-    .X(_019_),
-    .Y(_016_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _082_ (
-    .A(\pipe_data[1] [42:40]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_029_),
-    .X(_020_),
-    .Y(_015_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _083_ (
-    .A(\pipe_data[1] [34:32]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_030_),
-    .X(_021_),
-    .Y(_014_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _084_ (
-    .A(\pipe_data[1] [26:24]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_031_),
-    .X(_022_),
-    .Y(_013_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _085_ (
-    .A(\pipe_data[1] [18:16]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_032_),
-    .X(_023_),
-    .Y(_012_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _086_ (
-    .A(\pipe_data[1] [10:8]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_033_),
-    .X(_024_),
-    .Y(_011_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd0),
-    .A_WIDTH(32'd3),
-    .B_SIGNED(32'd0),
-    .B_WIDTH(32'd3),
-    .Y_WIDTH(32'd3)
-  ) _087_ (
-    .A(\pipe_data[1] [2:0]),
-    .B(running_max[2:0]),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_034_),
-    .X(_025_),
-    .Y(_010_)
-  );
-  \$alu  #(
-    .A_SIGNED(32'd1),
-    .A_WIDTH(32'd9),
-    .B_SIGNED(32'd1),
-    .B_WIDTH(32'd16),
-    .Y_WIDTH(32'd16)
-  ) _088_ (
-    .A({ 1'h0, \pipe_data[0] [7:0] }),
-    .B(running_max),
-    .BI(1'h1),
-    .CI(1'h1),
-    .CO(_035_),
-    .X(_026_),
-    .Y(_009_)
-  );
-  assign _039_ = _038_ ^ _009_[15];
-  assign _037_ = _039_ | _036_;
-  assign _036_ = & { _026_[0], _026_[1], _026_[2], _026_[3], _026_[4], _026_[5], _026_[6], _026_[7], _026_[8], _026_[9], _026_[10], _026_[11], _026_[12], _026_[13], _026_[14], _026_[15] };
-  assign _038_ = _035_[15] ^ _035_[14];
-  assign _048_ = { 8'h00, _040_[15:0] } / running_sum;
-  assign _049_ = { 8'h00, _041_[15:0] } / running_sum;
-  assign _050_ = { 8'h00, _042_[15:0] } / running_sum;
-  assign _051_ = { 8'h00, _043_[15:0] } / running_sum;
-  assign _052_ = { 8'h00, _044_[15:0] } / running_sum;
-  assign _053_ = { 8'h00, _045_[15:0] } / running_sum;
-  assign _054_ = { 8'h00, _046_[15:0] } / running_sum;
-  assign _055_ = { 8'h00, _047_[15:0] } / running_sum;
-  assign _056_ = s_axis_tvalid && s_axis_tready;
-  assign _057_ = | running_sum;
-  assign _058_ = ~ \pipe_valid[0] ;
-  assign s_axis_tready = m_axis_tready | _058_;
+  assign _023_ = { 8'h00, _015_[15:0] } / running_sum;
+  assign _024_ = { 8'h00, _016_[15:0] } / running_sum;
+  assign _025_ = { 8'h00, _017_[15:0] } / running_sum;
+  assign _026_ = { 8'h00, _018_[15:0] } / running_sum;
+  assign _027_ = { 8'h00, _019_[15:0] } / running_sum;
+  assign _028_ = { 8'h00, _020_[15:0] } / running_sum;
+  assign _029_ = { 8'h00, _021_[15:0] } / running_sum;
+  assign _030_ = { 8'h00, _022_[15:0] } / running_sum;
+  assign _031_ = $signed({ 1'h0, \pipe_data[0] [7:0] }) > $signed(running_max);
+  assign _032_ = running_max[2:0] > \pipe_data[1] [2:0];
+  assign _033_ = running_max[2:0] > \pipe_data[1] [10:8];
+  assign _034_ = running_max[2:0] > \pipe_data[1] [18:16];
+  assign _035_ = running_max[2:0] > \pipe_data[1] [26:24];
+  assign _036_ = running_max[2:0] > \pipe_data[1] [34:32];
+  assign _037_ = running_max[2:0] > \pipe_data[1] [42:40];
+  assign _038_ = running_max[2:0] > \pipe_data[1] [50:48];
+  assign _039_ = running_max[2:0] > \pipe_data[1] [58:56];
+  assign _040_ = s_axis_tvalid && s_axis_tready;
+  assign _015_[15:0] = \pipe_data[3] [7:0] * 8'hff;
+  assign _016_[15:0] = \pipe_data[3] [15:8] * 8'hff;
+  assign _017_[15:0] = \pipe_data[3] [23:16] * 8'hff;
+  assign _018_[15:0] = \pipe_data[3] [31:24] * 8'hff;
+  assign _019_[15:0] = \pipe_data[3] [39:32] * 8'hff;
+  assign _020_[15:0] = \pipe_data[3] [47:40] * 8'hff;
+  assign _021_[15:0] = \pipe_data[3] [55:48] * 8'hff;
+  assign _022_[15:0] = \pipe_data[3] [63:56] * 8'hff;
+  assign _041_ = | running_sum;
+  assign _042_ = ~ \pipe_valid[0] ;
+  assign s_axis_tready = m_axis_tready | _042_;
   always @(posedge clk or negedge rst_n)
     if (!rst_n)
       done <= 1'h0;
@@ -517,31 +289,31 @@ module synth_top(clk, rst_n, s_axis_tdata, s_axis_tvalid, s_axis_tlast, s_axis_t
       \pipe_last[0]  <= 1'h0;
     else
       \pipe_last[0]  <= _004_;
-  assign _007_ = \pipe_valid[2]  ? _069_ : running_sum;
-  assign _059_ = _037_ ? running_max : { 8'h00, \pipe_data[0] [7:0] };
-  assign _060_ = \pipe_last[0]  ? 16'h8000 : _059_;
-  assign _006_ = \pipe_valid[0]  ? _060_ : running_max;
-  assign _004_ = _056_ ? s_axis_tlast : \pipe_last[0] ;
-  assign _005_ = _056_ ? 1'h1 : 1'h0;
-  assign _001_ = _056_ ? s_axis_tdata : \pipe_data[0] ;
-  assign _061_ = _034_[2] ? 3'h0 : 3'h7;
-  assign _062_ = _033_[2] ? 3'h0 : 3'h7;
-  assign _063_ = _032_[2] ? 3'h0 : 3'h7;
-  assign _064_ = _031_[2] ? 3'h0 : 3'h7;
-  assign _065_ = _030_[2] ? 3'h0 : 3'h7;
-  assign _066_ = _029_[2] ? 3'h0 : 3'h7;
-  assign _067_ = _028_[2] ? 3'h0 : 3'h7;
-  assign _068_ = _027_[2] ? 3'h0 : 3'h7;
+  assign _007_ = \pipe_valid[2]  ? _053_ : running_sum;
+  assign _043_ = _031_ ? { 8'h00, \pipe_data[0] [7:0] } : running_max;
+  assign _044_ = \pipe_last[0]  ? 16'h8000 : _043_;
+  assign _006_ = \pipe_valid[0]  ? _044_ : running_max;
+  assign _004_ = _040_ ? s_axis_tlast : \pipe_last[0] ;
+  assign _005_ = _040_ ? 1'h1 : 1'h0;
+  assign _001_ = _040_ ? s_axis_tdata : \pipe_data[0] ;
+  assign _045_ = _032_ ? 3'h7 : 3'h0;
+  assign _046_ = _033_ ? 3'h7 : 3'h0;
+  assign _047_ = _034_ ? 3'h7 : 3'h0;
+  assign _048_ = _035_ ? 3'h7 : 3'h0;
+  assign _049_ = _036_ ? 3'h7 : 3'h0;
+  assign _050_ = _037_ ? 3'h7 : 3'h0;
+  assign _051_ = _038_ ? 3'h7 : 3'h0;
+  assign _052_ = _039_ ? 3'h7 : 3'h0;
   assign _002_ = \pipe_valid[1]  ? exp_beat : \pipe_data[1] ;
-  assign _069_ = \pipe_last[2]  ? 24'h000000 : _008_;
-  assign norm_beat[7:0] = _057_ ? _048_[7:0] : 8'h00;
-  assign norm_beat[15:8] = _057_ ? _049_[7:0] : 8'h00;
-  assign norm_beat[23:16] = _057_ ? _050_[7:0] : 8'h00;
-  assign norm_beat[31:24] = _057_ ? _051_[7:0] : 8'h00;
-  assign norm_beat[39:32] = _057_ ? _052_[7:0] : 8'h00;
-  assign norm_beat[47:40] = _057_ ? _053_[7:0] : 8'h00;
-  assign norm_beat[55:48] = _057_ ? _054_[7:0] : 8'h00;
-  assign norm_beat[63:56] = _057_ ? _055_[7:0] : 8'h00;
+  assign _053_ = \pipe_last[2]  ? 24'h000000 : _014_;
+  assign norm_beat[7:0] = _041_ ? _023_[7:0] : 8'h00;
+  assign norm_beat[15:8] = _041_ ? _024_[7:0] : 8'h00;
+  assign norm_beat[23:16] = _041_ ? _025_[7:0] : 8'h00;
+  assign norm_beat[31:24] = _041_ ? _026_[7:0] : 8'h00;
+  assign norm_beat[39:32] = _041_ ? _027_[7:0] : 8'h00;
+  assign norm_beat[47:40] = _041_ ? _028_[7:0] : 8'h00;
+  assign norm_beat[55:48] = _041_ ? _029_[7:0] : 8'h00;
+  assign norm_beat[63:56] = _041_ ? _030_[7:0] : 8'h00;
   assign _003_ = \pipe_valid[3]  ? norm_beat : \pipe_data[3] ;
   reg [7:0] exp_lut [7:0];
   initial begin
@@ -554,22 +326,25 @@ module synth_top(clk, rst_n, s_axis_tdata, s_axis_tvalid, s_axis_tlast, s_axis_t
     exp_lut[6] = 8'h77;
     exp_lut[7] = 8'h69;
   end
-  assign exp_beat[7:0] = exp_lut[_061_];
-  assign exp_beat[15:8] = exp_lut[_062_];
-  assign exp_beat[23:16] = exp_lut[_063_];
-  assign exp_beat[31:24] = exp_lut[_064_];
-  assign exp_beat[39:32] = exp_lut[_065_];
-  assign exp_beat[47:40] = exp_lut[_066_];
-  assign exp_beat[55:48] = exp_lut[_067_];
-  assign exp_beat[63:56] = exp_lut[_068_];
-  assign _040_[23:16] = 8'h00;
-  assign _041_[23:16] = 8'h00;
-  assign _042_[23:16] = 8'h00;
-  assign _043_[23:16] = 8'h00;
-  assign _044_[23:16] = 8'h00;
-  assign _045_[23:16] = 8'h00;
-  assign _046_[23:16] = 8'h00;
-  assign _047_[23:16] = 8'h00;
+  assign exp_beat[7:0] = exp_lut[_045_];
+  assign exp_beat[15:8] = exp_lut[_046_];
+  assign exp_beat[23:16] = exp_lut[_047_];
+  assign exp_beat[31:24] = exp_lut[_048_];
+  assign exp_beat[39:32] = exp_lut[_049_];
+  assign exp_beat[47:40] = exp_lut[_050_];
+  assign exp_beat[55:48] = exp_lut[_051_];
+  assign exp_beat[63:56] = exp_lut[_052_];
+  assign _011_[23:12] = 12'h000;
+  assign _012_[23:13] = 11'h000;
+  assign _013_[23:14] = 10'h000;
+  assign _015_[23:16] = 8'h00;
+  assign _016_[23:16] = 8'h00;
+  assign _017_[23:16] = 8'h00;
+  assign _018_[23:16] = 8'h00;
+  assign _019_[23:16] = 8'h00;
+  assign _020_[23:16] = 8'h00;
+  assign _021_[23:16] = 8'h00;
+  assign _022_[23:16] = 8'h00;
   assign byte0 = \pipe_data[1] [7:0];
   assign byte1 = \pipe_data[1] [15:8];
   assign byte2 = \pipe_data[1] [23:16];
