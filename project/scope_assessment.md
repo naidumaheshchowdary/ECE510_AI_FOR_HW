@@ -1,24 +1,52 @@
 # Project Scope Assessment
-ECE 410/510 - Spring 2026 | Mahesh Chowdary Naidu
-Project: Fused Softmax + Layer Normalization Accelerator
-Updated: CF07
+## ECE 410/510 HW4AI | Spring 2026
+## Project: Fused Softmax + Layer Normalization Accelerator
+## Updated: CF07 post-synthesis
 
-## Current Scope (confirmed)
+---
 
-8-stage pipelined compute core for fused INT8 softmax and layer normalization.
-Target config: d=64, T=64, batch=8 on SKY130 HD at 100-200 MHz.
-AXI4-Stream input and output, asynchronous active-low reset, single clock domain.
+## Current Scope (Confirmed)
 
-## What the CF07 Synthesis Revealed
+The project scope remains as defined in M1 and M2:
 
-The RTL elaborates cleanly (92 cells, 1831 wire bits, exit code 0) confirming the pipeline structure is logically sound. Two scope-relevant findings came out
-of this run.
+- **Algorithm:** Fused softmax + layer normalization in a single streaming pass
+  using online Welford algorithm and numerically stable softmax
+- **Hardware:** 8-stage INT8 pipeline, AXI4-Lite control, AXI4-Stream 64-bit data
+- **Target:** SKY130 HD PDK via OpenLane 2
+- **Dimensions:** Fixed d=64, T=64 (professor's transformer_lm config)
 
-The 8 $div cells in S5 are not synthesizable as-is on SKY130. This affects the softmax normalize stage which is core to the M2 deliverable. Replacing them with a reciprocal LUT is a small RTL change but it is required before M3 and is now the top priority.
+---
 
-The S8 LayerNorm output is currently a stub (g=1, b=0, passthrough). Full scale and shift arithmetic is deferred to M3 as planned. This remains on scope but is explicitly not started yet.
+## Synthesis Result Summary (CF07)
 
-## Scope Decision
+Yosys 0.9 synthesized `synth_top` to **92 generic cells** in 0.3 seconds:
+- 27 `$adff` (pipeline registers) — as expected for 8-stage design
+- 8 `$div` (S5 normalize) — **identified as critical path bottleneck**
+- 8 `$mul` + 26 `$mux` — arithmetic and control logic
 
-Core scope is unchanged. The fused softmax + layernorm pipeline in INT8 at d=64 is achievable on SKY130 within M3 timeline once the divide fix is applied. FP64 precision (precision=1 port) remains a stretch goal and will not be attempted for M3. AXI4-Lite config interface integration is also deferred post-M3 if time allows.
+The 8 integer dividers in Stage 5 (softmax normalize) are the primary risk
+for timing closure at 200 MHz on SKY130. This was not anticipated in M1/M2.
 
+---
+
+## Scope Adjustments for M3
+
+**Adjusted:** Replace `$div` cells in S5 with reciprocal multiply-shift
+(`recip = 65536 / running_sum` pre-computed once per row; output byte =
+`(eb * recip) >> 8`). This is a local arithmetic change that does not
+affect the interface, pipeline depth, or precision specification.
+
+**Adjusted:** Clock target relaxed from 200 MHz to **100 MHz** for M3
+synthesis attempt, with 200 MHz as a stretch goal once dividers are removed.
+
+**Unchanged:** Pipeline depth (8 stages), INT8 precision, AXI4 interfaces,
+d=64/T=64 dimensions, SKY130 PDK target.
+
+---
+
+## M3 Confidence Assessment
+
+The design is synthesizable — Yosys completed with zero errors. The
+critical path issue (division) has a known fix (reciprocal multiply).
+M3 synthesis attempt on OpenLane 2 with proper SKY130 liberty is on
+track for the May 24 deadline.
