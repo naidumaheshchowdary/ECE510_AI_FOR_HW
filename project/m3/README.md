@@ -1,4 +1,3 @@
-
 # Project Milestone 3 — README
 ## ECE 410/510 HW4AI | Spring 2026
 ## Fused Softmax + Layer Normalization Accelerator
