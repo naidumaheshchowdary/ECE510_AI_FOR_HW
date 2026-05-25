@@ -1,0 +1,28 @@
+Power Estimation Report — top (interface_mod_m3 + compute_core_m3)
+Tool   : OpenLane 2 power estimation (attempted, incomplete)
+Date   : Spring 2026 | ECE 410/510 HW4AI M3
+
+STATUS: INCOMPLETE
+  Reason: Yosys 0.9 generic gate mapping produces Chip area = 0.
+  Power requires mapped SKY130 cells + post-route parasitics (SPEF).
+  Full OpenLane 2 Docker needs >8 GB RAM (host: 4 GB).
+
+MANUAL ESTIMATE (SKY130 HD TT/25C/1.8V):
+  Leakage power:
+    $adff x38  ~  2 nW each  =  76 nW
+    $mux  x41  ~  1 nW each  =  41 nW
+    $div  x8  ~ 100 nW each  =  800 nW  (dominant)
+    Other x42  ~  1 nW each  =  42 nW
+    Total leakage  ~  959 nW
+
+  Dynamic power at 100 MHz (alpha=0.3):
+    P = alpha x C x V^2 x f
+      = 0.3 x 129x5fF x (1.8)^2 x 100e6
+      = 62.7 uW
+
+  Total estimate : ~63.6 uW at 100 MHz
+
+M4 PLAN:
+  1. Replace $div with reciprocal multiply (removes dominant leakage)
+  2. Run full OpenLane 2 on PSU cluster (>8 GB RAM available)
+  3. Annotate VCD activity for dynamic power with OpenROAD
