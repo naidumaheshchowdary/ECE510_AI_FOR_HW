@@ -1,15 +1,15 @@
 metric,value
 tool__yosys__version,Yosys 0.9 (git sha1 1979e0b)
 design__top_module,top
-design__instance__count__total,129
-design__instance__count__dff,38
+design__instance__count__total,133
+design__instance__count__dff,39
 design__instance__count__div,8
-design__instance__count__mux,41
-design__wire__count,208
-design__wire_bits__count,3033
-synthesis__ltp__depth,225
-synthesis__check_warning__count__unique,601
-synthesis__check_warning__count__total,85032
+design__instance__count__mux,43
+design__wire__count,212
+design__wire_bits__count,3106
+synthesis__ltp__depth,275
+synthesis__check_warning__count__unique,649
+synthesis__check_warning__count__total,91944
 synthesis__check_error__count,0
 design__instance__area,0
 clock__period__ns,10.0

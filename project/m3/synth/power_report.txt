@@ -9,18 +9,18 @@ STATUS: INCOMPLETE
 
 MANUAL ESTIMATE (SKY130 HD TT/25C/1.8V):
   Leakage power:
-    $adff x38  ~  2 nW each  =  76 nW
-    $mux  x41  ~  1 nW each  =  41 nW
+    $adff x39  ~  2 nW each  =  78 nW
+    $mux  x43  ~  1 nW each  =  43 nW
     $div  x8  ~ 100 nW each  =  800 nW  (dominant)
-    Other x42  ~  1 nW each  =  42 nW
-    Total leakage  ~  959 nW
+    Other x43  ~  1 nW each  =  43 nW
+    Total leakage  ~  964 nW
 
   Dynamic power at 100 MHz (alpha=0.3):
     P = alpha x C x V^2 x f
-      = 0.3 x 129x5fF x (1.8)^2 x 100e6
-      = 62.7 uW
+      = 0.3 x 133x5fF x (1.8)^2 x 100e6
+      = 64.6 uW
 
-  Total estimate : ~63.6 uW at 100 MHz
+  Total estimate : ~65.6 uW at 100 MHz
 
 M4 PLAN:
   1. Replace $div with reciprocal multiply (removes dominant leakage)
