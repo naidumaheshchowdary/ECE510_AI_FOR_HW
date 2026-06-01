@@ -1,7 +1,6 @@
 # Critical Path Analysis
 ## ECE 410/510 HW4AI | Spring 2026 | Milestone 3
 ## Design: top (interface + compute_core_m3)
-## Synthesis hash: 40dbf23ba9
 
 ---
 
