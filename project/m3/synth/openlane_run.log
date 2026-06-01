@@ -1,0 +1,957 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2019  Clifford Wolf <clifford@clifford.at>           |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.9 (git sha1 1979e0b)
+
+
+-- Executing script file `/content/synth.ys' --
+
+1. Executing Verilog-2005 frontend: /content/compute_core_m3.sv
+Parsing SystemVerilog input from `/content/compute_core_m3.sv' to AST representation.
+Generating RTLIL representation for module `\compute_core'.
+Warning: Replacing memory \pipe_last with list of registers. See /content/compute_core_m3.sv:52
+Warning: Replacing memory \pipe_valid with list of registers. See /content/compute_core_m3.sv:52
+Warning: Replacing memory \pipe_data with list of registers. See /content/compute_core_m3.sv:52
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /content/interface.sv
+Parsing SystemVerilog input from `/content/interface.sv' to AST representation.
+Generating RTLIL representation for module `\interface_mod'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: /content/top.sv
+Parsing SystemVerilog input from `/content/top.sv' to AST representation.
+Generating RTLIL representation for module `\top'.
+Successfully finished Verilog frontend.
+
+4. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1. Analyzing design hierarchy..
+Top module:  \top
+Used module:     \interface_mod
+Used module:         \compute_core
+
+4.2. Executing AST frontend in derive mode using pre-parsed AST for module `\compute_core'.
+Parameter \D = 64
+Parameter \T = 64
+Parameter \DATA_W = 8
+Parameter \AXIS_W = 64
+Parameter \PIPE_DEPTH = 8
+Generating RTLIL representation for module `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8'.
+Warning: Replacing memory \pipe_last with list of registers. See /content/compute_core_m3.sv:52
+Warning: Replacing memory \pipe_valid with list of registers. See /content/compute_core_m3.sv:52
+Warning: Replacing memory \pipe_data with list of registers. See /content/compute_core_m3.sv:52
+
+4.3. Executing AST frontend in derive mode using pre-parsed AST for module `\interface_mod'.
+Parameter \AXIL_AW = 6
+Parameter \AXIL_DW = 32
+Parameter \AXIS_W = 64
+Parameter \D = 64
+Parameter \T = 64
+Generating RTLIL representation for module `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64'.
+
+4.4. Analyzing design hierarchy..
+Top module:  \top
+Used module:     $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64
+Used module:         \compute_core
+
+4.5. Executing AST frontend in derive mode using pre-parsed AST for module `\compute_core'.
+Parameter \D = 64
+Parameter \T = 64
+Parameter \DATA_W = 8
+Parameter \AXIS_W = 64
+Parameter \PIPE_DEPTH = 8
+Found cached RTLIL representation for module `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8'.
+
+4.6. Analyzing design hierarchy..
+Top module:  \top
+Used module:     $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64
+Used module:         $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8
+
+4.7. Analyzing design hierarchy..
+Top module:  \top
+Used module:     $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64
+Used module:         $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8
+Removing unused module `\interface_mod'.
+Removing unused module `\compute_core'.
+Removed 2 unused modules.
+
+5. Executing PROC pass (convert processes to netlists).
+
+5.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+5.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$/content/interface.sv:174$441 in module $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.
+Marked 3 switch rules as full_case in process $proc$/content/interface.sv:150$439 in module $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.
+Marked 2 switch rules as full_case in process $proc$/content/interface.sv:122$436 in module $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.
+Marked 1 switch rules as full_case in process $proc$/content/compute_core_m3.sv:198$408 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 1 switch rules as full_case in process $proc$/content/compute_core_m3.sv:186$406 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 2 switch rules as full_case in process $proc$/content/compute_core_m3.sv:171$393 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 2 switch rules as full_case in process $proc$/content/compute_core_m3.sv:157$384 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 1 switch rules as full_case in process $proc$/content/compute_core_m3.sv:147$381 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 1 switch rules as full_case in process $proc$/content/compute_core_m3.sv:116$328 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 1 switch rules as full_case in process $proc$/content/compute_core_m3.sv:92$308 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 3 switch rules as full_case in process $proc$/content/compute_core_m3.sv:61$265 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Marked 2 switch rules as full_case in process $proc$/content/compute_core_m3.sv:50$262 in module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+Removed a total of 0 dead cases.
+
+5.3. Executing PROC_INIT pass (extract init attributes).
+
+5.4. Executing PROC_ARST pass (detect async resets in processes).
+Found async reset \rst_n in `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:174$441'.
+Found async reset \rst_n in `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+Found async reset \rst_n in `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:198$408'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+Found async reset \rst_n in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+
+5.5. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:174$441'.
+     1/3: $0\reg_status[31:0] [31:3]
+     2/3: $0\reg_status[31:0] [2]
+     3/3: $0\reg_status[31:0] [1:0]
+Creating decoders for process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+     1/4: $0\s_axil_rvalid[0:0]
+     2/4: $0\s_axil_rresp[1:0]
+     3/4: $0\s_axil_rdata[31:0]
+     4/4: $0\s_axil_arready[0:0]
+Creating decoders for process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+     1/8: $0\reg_precision[31:0]
+     2/8: $0\reg_cfg_t[31:0]
+     3/8: $0\reg_cfg_d[31:0]
+     4/8: $0\reg_ctrl[31:0]
+     5/8: $0\s_axil_bresp[1:0]
+     6/8: $0\s_axil_wready[0:0]
+     7/8: $0\s_axil_awready[0:0]
+     8/8: $0\s_axil_bvalid[0:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+     1/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$258_DATA[7:0]$435
+     2/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$258_ADDR[31:0]$434
+     3/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$257_DATA[7:0]$433
+     4/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$257_ADDR[31:0]$432
+     5/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$256_DATA[7:0]$431
+     6/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$256_ADDR[31:0]$430
+     7/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$255_DATA[7:0]$429
+     8/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:45$255_ADDR[31:0]$428
+     9/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$254_DATA[7:0]$427
+    10/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$254_ADDR[31:0]$426
+    11/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$253_DATA[7:0]$425
+    12/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$253_ADDR[31:0]$424
+    13/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$252_DATA[7:0]$423
+    14/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$252_ADDR[31:0]$422
+    15/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$251_DATA[7:0]$421
+    16/16: $0$memwr$\exp_lut$/content/compute_core_m3.sv:44$251_ADDR[31:0]$420
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:198$408'.
+     1/1: $0\done[0:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+     1/3: $0\pipe_last[7][0:0]
+     2/3: $0\pipe_valid[7][0:0]
+     3/3: $0\pipe_data[7][63:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+     1/10: $2$mem2bits$\pipe_data$/content/compute_core_m3.sv:181$250[63:0]$400
+     2/10: $2$mem2bits$\pipe_data$/content/compute_core_m3.sv:180$249[63:0]$399
+     3/10: $1$mem2bits$\pipe_data$/content/compute_core_m3.sv:181$250[63:0]$398
+     4/10: $1$mem2bits$\pipe_data$/content/compute_core_m3.sv:180$249[63:0]$397
+     5/10: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:181$250[63:0]$395
+     6/10: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:180$249[63:0]$394
+     7/10: $0\pipe_last[6][0:0]
+     8/10: $0\pipe_valid[6][0:0]
+     9/10: $0\pipe_data[6][63:0]
+    10/10: $0\welford_m2[23:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+     1/7: $2$mem2bits$\pipe_data$/content/compute_core_m3.sv:165$248[63:0]$388
+     2/7: $1$mem2bits$\pipe_data$/content/compute_core_m3.sv:165$248[63:0]$387
+     3/7: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:165$248[63:0]$385
+     4/7: $0\pipe_last[5][0:0]
+     5/7: $0\pipe_valid[5][0:0]
+     6/7: $0\pipe_data[5][63:0]
+     7/7: $0\welford_mean[23:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+     1/3: $0\pipe_last[4][0:0]
+     2/3: $0\pipe_valid[4][0:0]
+     3/3: $0\pipe_data[4][63:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+     1/24: $0\norm_beat[63:0] [63:56]
+     2/24: $0\norm_beat[63:0] [55:48]
+     3/24: $0\norm_beat[63:0] [47:40]
+     4/24: $0\norm_beat[63:0] [39:32]
+     5/24: $0\norm_beat[63:0] [31:24]
+     6/24: $0\norm_beat[63:0] [23:16]
+     7/24: $0\norm_beat[63:0] [15:8]
+     8/24: $0\norm_beat[63:0] [7:0]
+     9/24: $0\eb7[7:0]
+    10/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:137$247[63:0]$340
+    11/24: $0\eb6[7:0]
+    12/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:137$246[63:0]$339
+    13/24: $0\eb5[7:0]
+    14/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:136$245[63:0]$338
+    15/24: $0\eb4[7:0]
+    16/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:136$244[63:0]$337
+    17/24: $0\eb3[7:0]
+    18/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:135$243[63:0]$336
+    19/24: $0\eb2[7:0]
+    20/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:135$242[63:0]$335
+    21/24: $0\eb1[7:0]
+    22/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:134$241[63:0]$334
+    23/24: $0\eb0[7:0]
+    24/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:134$240[63:0]$333
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+     1/5: $0\pipe_last[3][0:0]
+     2/5: $0\pipe_valid[3][0:0]
+     3/5: $0\pipe_data[3][63:0]
+     4/5: $0\final_sum[23:0]
+     5/5: $0\running_sum[23:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+     1/9: $0\beat_sum[23:0]
+     2/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:114$239[63:0]$319
+     3/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:113$238[63:0]$318
+     4/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:112$237[63:0]$317
+     5/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:111$236[63:0]$316
+     6/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:110$235[63:0]$315
+     7/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:109$234[63:0]$314
+     8/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:108$233[63:0]$313
+     9/9: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:107$232[63:0]$312
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+     1/3: $0\pipe_last[2][0:0]
+     2/3: $0\pipe_valid[2][0:0]
+     3/3: $0\pipe_data[2][63:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+     1/24: $0\exp_beat[63:0] [63:56]
+     2/24: $0\exp_beat[63:0] [55:48]
+     3/24: $0\exp_beat[63:0] [47:40]
+     4/24: $0\exp_beat[63:0] [39:32]
+     5/24: $0\exp_beat[63:0] [31:24]
+     6/24: $0\exp_beat[63:0] [23:16]
+     7/24: $0\exp_beat[63:0] [15:8]
+     8/24: $0\exp_beat[63:0] [7:0]
+     9/24: $0\byte7[7:0]
+    10/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:82$231[63:0]$283
+    11/24: $0\byte6[7:0]
+    12/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:82$230[63:0]$281
+    13/24: $0\byte5[7:0]
+    14/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:81$229[63:0]$276
+    15/24: $0\byte4[7:0]
+    16/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:81$228[63:0]$277
+    17/24: $0\byte3[7:0]
+    18/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:80$227[63:0]$278
+    19/24: $0\byte2[7:0]
+    20/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:80$226[63:0]$279
+    21/24: $0\byte1[7:0]
+    22/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:79$225[63:0]$282
+    23/24: $0\byte0[7:0]
+    24/24: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:79$224[63:0]$280
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+     1/11: $3$mem2bits$\pipe_data$/content/compute_core_m3.sv:69$223[63:0]$274
+     2/11: $2$mem2bits$\pipe_data$/content/compute_core_m3.sv:69$223[63:0]$272
+     3/11: $2$mem2bits$\pipe_data$/content/compute_core_m3.sv:68$222[63:0]$271
+     4/11: $1$mem2bits$\pipe_data$/content/compute_core_m3.sv:69$223[63:0]$270
+     5/11: $1$mem2bits$\pipe_data$/content/compute_core_m3.sv:68$222[63:0]$269
+     6/11: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:69$223[63:0]$267
+     7/11: $0$mem2bits$\pipe_data$/content/compute_core_m3.sv:68$222[63:0]$266
+     8/11: $0\pipe_last[1][0:0]
+     9/11: $0\pipe_valid[1][0:0]
+    10/11: $0\pipe_data[1][63:0]
+    11/11: $0\running_max[15:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+     1/3: $0\pipe_last[0][0:0]
+     2/3: $0\pipe_valid[0][0:0]
+     3/3: $0\pipe_data[0][63:0]
+Creating decoders for process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:49$259'.
+     1/1: $0\s_axis_tready[0:0]
+
+5.6. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$251_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$251_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$252_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$252_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$253_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$253_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$254_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:44$254_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$255_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$255_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$256_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$256_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$257_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$257_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$258_ADDR' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$memwr$\exp_lut$/content/compute_core_m3.sv:45$258_DATA' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\norm_beat' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb0' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb1' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb2' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb3' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb4' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb5' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb6' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\eb7' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:134$240' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:134$241' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:135$242' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:135$243' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:136$244' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:136$245' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:137$246' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:137$247' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\beat_sum' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:107$232' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:108$233' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:109$234' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:110$235' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:111$236' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:112$237' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:113$238' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:114$239' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte0' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte1' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte2' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte3' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte4' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte5' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte6' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\byte7' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\exp_beat' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:81$229' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:81$228' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:80$227' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:80$226' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:79$224' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:82$230' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:79$225' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:82$231' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+No latch inferred for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\s_axis_tready' from process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:49$259'.
+
+5.7. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\reg_status' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:174$441'.
+  created $adff cell `$procdff$547' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_arready' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+  created $adff cell `$procdff$548' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_rdata' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+  created $adff cell `$procdff$549' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_rresp' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+  created $adff cell `$procdff$550' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_rvalid' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+  created $adff cell `$procdff$551' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_bvalid' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$552' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_awready' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$553' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_wready' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$554' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\s_axil_bresp' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$555' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\reg_ctrl' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$556' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\reg_cfg_d' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$557' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\reg_cfg_t' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$558' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.\reg_precision' using process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+  created $adff cell `$procdff$559' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\done' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:198$408'.
+  created $adff cell `$procdff$560' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[7]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+  created $adff cell `$procdff$561' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[7]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+  created $adff cell `$procdff$562' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[7]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+  created $adff cell `$procdff$563' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\welford_m2' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$564' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[6]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$565' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[6]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$566' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[6]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$567' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:180$249' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$568' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:181$250' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+  created $adff cell `$procdff$569' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\welford_mean' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+  created $adff cell `$procdff$570' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[5]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+  created $adff cell `$procdff$571' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[5]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+  created $adff cell `$procdff$572' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[5]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+  created $adff cell `$procdff$573' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:165$248' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+  created $adff cell `$procdff$574' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[4]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+  created $adff cell `$procdff$575' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[4]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+  created $adff cell `$procdff$576' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[4]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+  created $adff cell `$procdff$577' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\running_sum' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+  created $adff cell `$procdff$578' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\final_sum' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+  created $adff cell `$procdff$579' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[3]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+  created $adff cell `$procdff$580' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[3]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+  created $adff cell `$procdff$581' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[3]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+  created $adff cell `$procdff$582' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[2]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+  created $adff cell `$procdff$583' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[2]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+  created $adff cell `$procdff$584' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[2]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+  created $adff cell `$procdff$585' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\running_max' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$586' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[1]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$587' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[1]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$588' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[1]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$589' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:68$222' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$590' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$mem2bits$\pipe_data$/content/compute_core_m3.sv:69$223' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+  created $adff cell `$procdff$591' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_data[0]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+  created $adff cell `$procdff$592' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_valid[0]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+  created $adff cell `$procdff$593' with positive edge clock and negative level reset.
+Creating register for signal `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.\pipe_last[0]' using process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+  created $adff cell `$procdff$594' with positive edge clock and negative level reset.
+
+5.8. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:174$441'.
+Found and cleaned up 3 empty switches in `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+Removing empty process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:150$439'.
+Found and cleaned up 3 empty switches in `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+Removing empty process `$paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.$proc$/content/interface.sv:122$436'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:43$419'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:198$408'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:186$406'.
+Found and cleaned up 1 empty switch in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:171$393'.
+Found and cleaned up 1 empty switch in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:157$384'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:147$381'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:133$332'.
+Found and cleaned up 3 empty switches in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:116$328'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:105$311'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:92$308'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:78$275'.
+Found and cleaned up 3 empty switches in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:61$265'.
+Found and cleaned up 1 empty switch in `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:50$262'.
+Removing empty process `$paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.$proc$/content/compute_core_m3.sv:49$259'.
+Cleaned up 15 empty switches.
+
+6. Executing FLATTEN pass (flatten design).
+Using template $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64 for cells of type $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.
+Using template $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8 for cells of type $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+<suppressed ~2 debug messages>
+No more expansions possible.
+Deleting now unused module $paramod\interface_mod\AXIL_AW=6\AXIL_DW=32\AXIS_W=64\D=64\T=64.
+Deleting now unused module $paramod\compute_core\D=64\T=64\DATA_W=8\AXIS_W=64\PIPE_DEPTH=8.
+
+7. Executing OPT pass (performing simple optimizations).
+
+7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module top.
+<suppressed ~20 debug messages>
+
+7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\top'.
+<suppressed ~75 debug messages>
+Removed a total of 25 cells.
+
+7.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$496.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$496.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$499.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$499.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$505.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$505.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$520.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$520.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$522.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$522.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$525.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$525.
+    dead port 1/2 on $mux $techmap\u_interface.u_core.$procmux$528.
+    dead port 2/2 on $mux $techmap\u_interface.u_core.$procmux$528.
+Removed 14 multiplexer ports.
+<suppressed ~27 debug messages>
+
+7.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+7.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.6. Executing OPT_RMDFF pass (remove dff with constant values).
+Removing $techmap\u_interface.u_core.$procdff$568 ($adff) from module top.
+Replaced 1 DFF cells.
+
+7.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \top..
+Removed 12 unused cells and 252 unused wires.
+<suppressed ~16 debug messages>
+
+7.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module top.
+
+7.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~25 debug messages>
+
+7.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+7.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \top..
+
+7.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module top.
+
+7.16. Finished OPT passes. (There is nothing left to do.)
+
+8. Executing MEMORY pass.
+
+8.1. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:83$284' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:84$287' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:85$290' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:86$293' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:87$296' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:88$299' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:89$302' in module `\top': no (compatible) $dff found.
+Checking cell `$techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:90$305' in module `\top': no (compatible) $dff found.
+
+8.2. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \top..
+
+8.3. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+8.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \top..
+
+8.5. Executing MEMORY_COLLECT pass (generating $mem cells).
+Collecting $memrd, $memwr and $meminit for memory `\u_interface.u_core.exp_lut' in module `\top':
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:44$411 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:44$412 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:44$413 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:44$414 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:45$415 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:45$416 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:45$417 ($meminit)
+  $techmap\u_interface.u_core.$meminit$\exp_lut$/content/compute_core_m3.sv:45$418 ($meminit)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:90$305 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:89$302 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:88$299 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:87$296 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:86$293 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:85$290 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:84$287 ($memrd)
+  $techmap\u_interface.u_core.$memrd$\exp_lut$/content/compute_core_m3.sv:83$284 ($memrd)
+
+9. Executing OPT pass (performing simple optimizations).
+
+9.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module top.
+
+9.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+9.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~25 debug messages>
+
+9.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+9.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+9.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+9.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \top..
+
+9.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module top.
+
+9.9. Finished OPT passes. (There is nothing left to do.)
+
+10. Printing statistics.
+
+=== top ===
+
+   Number of wires:                212
+   Number of wire bits:           3106
+   Number of public wires:         121
+   Number of public wire bits:    1648
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                133
+     $add                            8
+     $adff                          39
+     $and                            1
+     $div                            8
+     $eq                             7
+     $gt                             9
+     $logic_and                      2
+     $logic_not                      2
+     $mem                            1
+     $mul                            8
+     $mux                           43
+     $not                            1
+     $or                             1
+     $pmux                           1
+     $reduce_bool                    2
+
+11. Executing Verilog backend.
+Dumping module `\top'.
+
+12. Executing LTP pass (find longest path).
+Warning: Detected loop at $techmap\u_interface.u_core.$procmux$514_Y [0] in top
+Warning: Detected loop at $techmap\u_interface.u_core.$0\running_sum[23:0] [0] in top
+Warning: Detected loop at \u_interface.u_core.running_sum [0] in top
+Warning: Detected loop at $techmap\u_interface.u_core.$procmux$514_Y [0] in top
+Warning: Detected loop at $techmap\u_interface.u_core.$procmux$514_Y [1] in top
+
+Longest topological path in top (length=275):
+    0: \rst_n
+    1: \u_interface.u_core.pipe_valid[0] (via $techmap\u_interface.u_core.$procdff$593)
+    2: $techmap\u_interface.u_core.$not$/content/compute_core_m3.sv:49$260_Y (via $techmap\u_interface.u_core.$not$/content/compute_core_m3.sv:49$260)
+    3: \u_interface.u_core.s_axis_tready (via $techmap\u_interface.u_core.$or$/content/compute_core_m3.sv:49$261)
+    4: $techmap\u_interface.u_core.$logic_and$/content/compute_core_m3.sv:53$264_Y (via $techmap\u_interface.u_core.$logic_and$/content/compute_core_m3.sv:53$264)
+    5: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [0] (via $techmap\u_interface.u_core.$procmux$545)
+    6: \u_interface.u_core.pipe_data[0] [0] (via $techmap\u_interface.u_core.$procdff$592)
+    7: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [1] (via $techmap\u_interface.u_core.$procmux$545)
+    8: \u_interface.u_core.pipe_data[0] [1] (via $techmap\u_interface.u_core.$procdff$592)
+    9: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [2] (via $techmap\u_interface.u_core.$procmux$545)
+   10: \u_interface.u_core.pipe_data[0] [2] (via $techmap\u_interface.u_core.$procdff$592)
+   11: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [3] (via $techmap\u_interface.u_core.$procmux$545)
+   12: \u_interface.u_core.pipe_data[0] [3] (via $techmap\u_interface.u_core.$procdff$592)
+   13: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [4] (via $techmap\u_interface.u_core.$procmux$545)
+   14: \u_interface.u_core.pipe_data[0] [4] (via $techmap\u_interface.u_core.$procdff$592)
+   15: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [5] (via $techmap\u_interface.u_core.$procmux$545)
+   16: \u_interface.u_core.pipe_data[0] [5] (via $techmap\u_interface.u_core.$procdff$592)
+   17: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [6] (via $techmap\u_interface.u_core.$procmux$545)
+   18: \u_interface.u_core.pipe_data[0] [6] (via $techmap\u_interface.u_core.$procdff$592)
+   19: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [7] (via $techmap\u_interface.u_core.$procmux$545)
+   20: \u_interface.u_core.pipe_data[0] [7] (via $techmap\u_interface.u_core.$procdff$592)
+   21: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [8] (via $techmap\u_interface.u_core.$procmux$545)
+   22: \u_interface.u_core.pipe_data[0] [8] (via $techmap\u_interface.u_core.$procdff$592)
+   23: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [9] (via $techmap\u_interface.u_core.$procmux$545)
+   24: \u_interface.u_core.pipe_data[0] [9] (via $techmap\u_interface.u_core.$procdff$592)
+   25: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [10] (via $techmap\u_interface.u_core.$procmux$545)
+   26: \u_interface.u_core.pipe_data[0] [10] (via $techmap\u_interface.u_core.$procdff$592)
+   27: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [11] (via $techmap\u_interface.u_core.$procmux$545)
+   28: \u_interface.u_core.pipe_data[0] [11] (via $techmap\u_interface.u_core.$procdff$592)
+   29: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [12] (via $techmap\u_interface.u_core.$procmux$545)
+   30: \u_interface.u_core.pipe_data[0] [12] (via $techmap\u_interface.u_core.$procdff$592)
+   31: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [13] (via $techmap\u_interface.u_core.$procmux$545)
+   32: \u_interface.u_core.pipe_data[0] [13] (via $techmap\u_interface.u_core.$procdff$592)
+   33: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [14] (via $techmap\u_interface.u_core.$procmux$545)
+   34: \u_interface.u_core.pipe_data[0] [14] (via $techmap\u_interface.u_core.$procdff$592)
+   35: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [15] (via $techmap\u_interface.u_core.$procmux$545)
+   36: \u_interface.u_core.pipe_data[0] [15] (via $techmap\u_interface.u_core.$procdff$592)
+   37: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [16] (via $techmap\u_interface.u_core.$procmux$545)
+   38: \u_interface.u_core.pipe_data[0] [16] (via $techmap\u_interface.u_core.$procdff$592)
+   39: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [17] (via $techmap\u_interface.u_core.$procmux$545)
+   40: \u_interface.u_core.pipe_data[0] [17] (via $techmap\u_interface.u_core.$procdff$592)
+   41: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [18] (via $techmap\u_interface.u_core.$procmux$545)
+   42: \u_interface.u_core.pipe_data[0] [18] (via $techmap\u_interface.u_core.$procdff$592)
+   43: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [19] (via $techmap\u_interface.u_core.$procmux$545)
+   44: \u_interface.u_core.pipe_data[0] [19] (via $techmap\u_interface.u_core.$procdff$592)
+   45: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [20] (via $techmap\u_interface.u_core.$procmux$545)
+   46: \u_interface.u_core.pipe_data[0] [20] (via $techmap\u_interface.u_core.$procdff$592)
+   47: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [21] (via $techmap\u_interface.u_core.$procmux$545)
+   48: \u_interface.u_core.pipe_data[0] [21] (via $techmap\u_interface.u_core.$procdff$592)
+   49: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [22] (via $techmap\u_interface.u_core.$procmux$545)
+   50: \u_interface.u_core.pipe_data[0] [22] (via $techmap\u_interface.u_core.$procdff$592)
+   51: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [23] (via $techmap\u_interface.u_core.$procmux$545)
+   52: \u_interface.u_core.pipe_data[0] [23] (via $techmap\u_interface.u_core.$procdff$592)
+   53: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [24] (via $techmap\u_interface.u_core.$procmux$545)
+   54: \u_interface.u_core.pipe_data[0] [24] (via $techmap\u_interface.u_core.$procdff$592)
+   55: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [25] (via $techmap\u_interface.u_core.$procmux$545)
+   56: \u_interface.u_core.pipe_data[0] [25] (via $techmap\u_interface.u_core.$procdff$592)
+   57: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [26] (via $techmap\u_interface.u_core.$procmux$545)
+   58: \u_interface.u_core.pipe_data[0] [26] (via $techmap\u_interface.u_core.$procdff$592)
+   59: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [27] (via $techmap\u_interface.u_core.$procmux$545)
+   60: \u_interface.u_core.pipe_data[0] [27] (via $techmap\u_interface.u_core.$procdff$592)
+   61: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [28] (via $techmap\u_interface.u_core.$procmux$545)
+   62: \u_interface.u_core.pipe_data[0] [28] (via $techmap\u_interface.u_core.$procdff$592)
+   63: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [29] (via $techmap\u_interface.u_core.$procmux$545)
+   64: \u_interface.u_core.pipe_data[0] [29] (via $techmap\u_interface.u_core.$procdff$592)
+   65: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [30] (via $techmap\u_interface.u_core.$procmux$545)
+   66: \u_interface.u_core.pipe_data[0] [30] (via $techmap\u_interface.u_core.$procdff$592)
+   67: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [31] (via $techmap\u_interface.u_core.$procmux$545)
+   68: \u_interface.u_core.pipe_data[0] [31] (via $techmap\u_interface.u_core.$procdff$592)
+   69: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [32] (via $techmap\u_interface.u_core.$procmux$545)
+   70: \u_interface.u_core.pipe_data[0] [32] (via $techmap\u_interface.u_core.$procdff$592)
+   71: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [33] (via $techmap\u_interface.u_core.$procmux$545)
+   72: \u_interface.u_core.pipe_data[0] [33] (via $techmap\u_interface.u_core.$procdff$592)
+   73: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [34] (via $techmap\u_interface.u_core.$procmux$545)
+   74: \u_interface.u_core.pipe_data[0] [34] (via $techmap\u_interface.u_core.$procdff$592)
+   75: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [35] (via $techmap\u_interface.u_core.$procmux$545)
+   76: \u_interface.u_core.pipe_data[0] [35] (via $techmap\u_interface.u_core.$procdff$592)
+   77: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [36] (via $techmap\u_interface.u_core.$procmux$545)
+   78: \u_interface.u_core.pipe_data[0] [36] (via $techmap\u_interface.u_core.$procdff$592)
+   79: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [37] (via $techmap\u_interface.u_core.$procmux$545)
+   80: \u_interface.u_core.pipe_data[0] [37] (via $techmap\u_interface.u_core.$procdff$592)
+   81: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [38] (via $techmap\u_interface.u_core.$procmux$545)
+   82: \u_interface.u_core.pipe_data[0] [38] (via $techmap\u_interface.u_core.$procdff$592)
+   83: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [39] (via $techmap\u_interface.u_core.$procmux$545)
+   84: \u_interface.u_core.pipe_data[0] [39] (via $techmap\u_interface.u_core.$procdff$592)
+   85: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [40] (via $techmap\u_interface.u_core.$procmux$545)
+   86: \u_interface.u_core.pipe_data[0] [40] (via $techmap\u_interface.u_core.$procdff$592)
+   87: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [41] (via $techmap\u_interface.u_core.$procmux$545)
+   88: \u_interface.u_core.pipe_data[0] [41] (via $techmap\u_interface.u_core.$procdff$592)
+   89: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [42] (via $techmap\u_interface.u_core.$procmux$545)
+   90: \u_interface.u_core.pipe_data[0] [42] (via $techmap\u_interface.u_core.$procdff$592)
+   91: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [43] (via $techmap\u_interface.u_core.$procmux$545)
+   92: \u_interface.u_core.pipe_data[0] [43] (via $techmap\u_interface.u_core.$procdff$592)
+   93: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [44] (via $techmap\u_interface.u_core.$procmux$545)
+   94: \u_interface.u_core.pipe_data[0] [44] (via $techmap\u_interface.u_core.$procdff$592)
+   95: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [45] (via $techmap\u_interface.u_core.$procmux$545)
+   96: \u_interface.u_core.pipe_data[0] [45] (via $techmap\u_interface.u_core.$procdff$592)
+   97: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [46] (via $techmap\u_interface.u_core.$procmux$545)
+   98: \u_interface.u_core.pipe_data[0] [46] (via $techmap\u_interface.u_core.$procdff$592)
+   99: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [47] (via $techmap\u_interface.u_core.$procmux$545)
+  100: \u_interface.u_core.pipe_data[0] [47] (via $techmap\u_interface.u_core.$procdff$592)
+  101: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [48] (via $techmap\u_interface.u_core.$procmux$545)
+  102: \u_interface.u_core.pipe_data[0] [48] (via $techmap\u_interface.u_core.$procdff$592)
+  103: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [49] (via $techmap\u_interface.u_core.$procmux$545)
+  104: \u_interface.u_core.pipe_data[0] [49] (via $techmap\u_interface.u_core.$procdff$592)
+  105: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [50] (via $techmap\u_interface.u_core.$procmux$545)
+  106: \u_interface.u_core.pipe_data[0] [50] (via $techmap\u_interface.u_core.$procdff$592)
+  107: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [51] (via $techmap\u_interface.u_core.$procmux$545)
+  108: \u_interface.u_core.pipe_data[0] [51] (via $techmap\u_interface.u_core.$procdff$592)
+  109: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [52] (via $techmap\u_interface.u_core.$procmux$545)
+  110: \u_interface.u_core.pipe_data[0] [52] (via $techmap\u_interface.u_core.$procdff$592)
+  111: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [53] (via $techmap\u_interface.u_core.$procmux$545)
+  112: \u_interface.u_core.pipe_data[0] [53] (via $techmap\u_interface.u_core.$procdff$592)
+  113: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [54] (via $techmap\u_interface.u_core.$procmux$545)
+  114: \u_interface.u_core.pipe_data[0] [54] (via $techmap\u_interface.u_core.$procdff$592)
+  115: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [55] (via $techmap\u_interface.u_core.$procmux$545)
+  116: \u_interface.u_core.pipe_data[0] [55] (via $techmap\u_interface.u_core.$procdff$592)
+  117: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [56] (via $techmap\u_interface.u_core.$procmux$545)
+  118: \u_interface.u_core.pipe_data[0] [56] (via $techmap\u_interface.u_core.$procdff$592)
+  119: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [57] (via $techmap\u_interface.u_core.$procmux$545)
+  120: \u_interface.u_core.pipe_data[0] [57] (via $techmap\u_interface.u_core.$procdff$592)
+  121: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [58] (via $techmap\u_interface.u_core.$procmux$545)
+  122: \u_interface.u_core.pipe_data[0] [58] (via $techmap\u_interface.u_core.$procdff$592)
+  123: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [59] (via $techmap\u_interface.u_core.$procmux$545)
+  124: \u_interface.u_core.pipe_data[0] [59] (via $techmap\u_interface.u_core.$procdff$592)
+  125: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [60] (via $techmap\u_interface.u_core.$procmux$545)
+  126: \u_interface.u_core.pipe_data[0] [60] (via $techmap\u_interface.u_core.$procdff$592)
+  127: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [61] (via $techmap\u_interface.u_core.$procmux$545)
+  128: \u_interface.u_core.pipe_data[0] [61] (via $techmap\u_interface.u_core.$procdff$592)
+  129: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [62] (via $techmap\u_interface.u_core.$procmux$545)
+  130: \u_interface.u_core.pipe_data[0] [62] (via $techmap\u_interface.u_core.$procdff$592)
+  131: $techmap\u_interface.u_core.$0\pipe_data[0][63:0] [63] (via $techmap\u_interface.u_core.$procmux$545)
+  132: \u_interface.u_core.pipe_data[0] [63] (via $techmap\u_interface.u_core.$procdff$592)
+  133: \u_interface.u_core.pipe_data[1] [0] (via $techmap\u_interface.u_core.$procdff$587)
+  134: $techmap\u_interface.u_core.$gt$/content/compute_core_m3.sv:83$285_Y (via $techmap\u_interface.u_core.$gt$/content/compute_core_m3.sv:83$285)
+  135: $techmap\u_interface.u_core.$ternary$/content/compute_core_m3.sv:83$286_Y [0] (via $techmap\u_interface.u_core.$ternary$/content/compute_core_m3.sv:83$286)
+  136: \u_interface.u_core.exp_beat [56] (via u_interface.u_core.exp_lut)
+  137: $techmap\u_interface.u_core.$0\pipe_data[2][63:0] [0] (via $techmap\u_interface.u_core.$ternary$/content/compute_core_m3.sv:97$310)
+  138: \u_interface.u_core.pipe_data[2] [0] (via $techmap\u_interface.u_core.$procdff$583)
+  139: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:108$321_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:108$321)
+  140: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:109$322_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:109$322)
+  141: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:110$323_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:110$323)
+  142: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:111$324_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:111$324)
+  143: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:112$325_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:112$325)
+  144: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:113$326_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:113$326)
+  145: \u_interface.u_core.beat_sum [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:114$327)
+  146: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:123$330_Y [0] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:123$330)
+  147: $techmap\u_interface.u_core.$procmux$514_Y [0] (via $techmap\u_interface.u_core.$procmux$514)
+  148: $techmap\u_interface.u_core.$0\running_sum[23:0] [0] (via $techmap\u_interface.u_core.$procmux$516)
+  149: \u_interface.u_core.running_sum [0] (via $techmap\u_interface.u_core.$procdff$578)
+  150: $techmap\u_interface.u_core.$procmux$514_Y [1] (via $techmap\u_interface.u_core.$procmux$514)
+  151: $techmap\u_interface.u_core.$0\running_sum[23:0] [1] (via $techmap\u_interface.u_core.$procmux$516)
+  152: \u_interface.u_core.running_sum [1] (via $techmap\u_interface.u_core.$procdff$578)
+  153: $techmap\u_interface.u_core.$procmux$514_Y [2] (via $techmap\u_interface.u_core.$procmux$514)
+  154: $techmap\u_interface.u_core.$0\running_sum[23:0] [2] (via $techmap\u_interface.u_core.$procmux$516)
+  155: \u_interface.u_core.running_sum [2] (via $techmap\u_interface.u_core.$procdff$578)
+  156: $techmap\u_interface.u_core.$procmux$514_Y [3] (via $techmap\u_interface.u_core.$procmux$514)
+  157: $techmap\u_interface.u_core.$0\running_sum[23:0] [3] (via $techmap\u_interface.u_core.$procmux$516)
+  158: \u_interface.u_core.running_sum [3] (via $techmap\u_interface.u_core.$procdff$578)
+  159: $techmap\u_interface.u_core.$procmux$514_Y [4] (via $techmap\u_interface.u_core.$procmux$514)
+  160: $techmap\u_interface.u_core.$0\running_sum[23:0] [4] (via $techmap\u_interface.u_core.$procmux$516)
+  161: \u_interface.u_core.running_sum [4] (via $techmap\u_interface.u_core.$procdff$578)
+  162: $techmap\u_interface.u_core.$procmux$514_Y [5] (via $techmap\u_interface.u_core.$procmux$514)
+  163: $techmap\u_interface.u_core.$0\running_sum[23:0] [5] (via $techmap\u_interface.u_core.$procmux$516)
+  164: \u_interface.u_core.running_sum [5] (via $techmap\u_interface.u_core.$procdff$578)
+  165: $techmap\u_interface.u_core.$procmux$514_Y [6] (via $techmap\u_interface.u_core.$procmux$514)
+  166: $techmap\u_interface.u_core.$0\running_sum[23:0] [6] (via $techmap\u_interface.u_core.$procmux$516)
+  167: \u_interface.u_core.running_sum [6] (via $techmap\u_interface.u_core.$procdff$578)
+  168: $techmap\u_interface.u_core.$procmux$514_Y [7] (via $techmap\u_interface.u_core.$procmux$514)
+  169: $techmap\u_interface.u_core.$0\running_sum[23:0] [7] (via $techmap\u_interface.u_core.$procmux$516)
+  170: \u_interface.u_core.running_sum [7] (via $techmap\u_interface.u_core.$procdff$578)
+  171: $techmap\u_interface.u_core.$procmux$514_Y [8] (via $techmap\u_interface.u_core.$procmux$514)
+  172: $techmap\u_interface.u_core.$0\running_sum[23:0] [8] (via $techmap\u_interface.u_core.$procmux$516)
+  173: \u_interface.u_core.running_sum [8] (via $techmap\u_interface.u_core.$procdff$578)
+  174: $techmap\u_interface.u_core.$procmux$514_Y [9] (via $techmap\u_interface.u_core.$procmux$514)
+  175: $techmap\u_interface.u_core.$0\running_sum[23:0] [9] (via $techmap\u_interface.u_core.$procmux$516)
+  176: \u_interface.u_core.running_sum [9] (via $techmap\u_interface.u_core.$procdff$578)
+  177: $techmap\u_interface.u_core.$procmux$514_Y [10] (via $techmap\u_interface.u_core.$procmux$514)
+  178: $techmap\u_interface.u_core.$0\running_sum[23:0] [10] (via $techmap\u_interface.u_core.$procmux$516)
+  179: \u_interface.u_core.running_sum [10] (via $techmap\u_interface.u_core.$procdff$578)
+  180: $techmap\u_interface.u_core.$procmux$514_Y [11] (via $techmap\u_interface.u_core.$procmux$514)
+  181: $techmap\u_interface.u_core.$0\running_sum[23:0] [11] (via $techmap\u_interface.u_core.$procmux$516)
+  182: \u_interface.u_core.running_sum [11] (via $techmap\u_interface.u_core.$procdff$578)
+  183: $techmap\u_interface.u_core.$procmux$514_Y [12] (via $techmap\u_interface.u_core.$procmux$514)
+  184: $techmap\u_interface.u_core.$0\running_sum[23:0] [12] (via $techmap\u_interface.u_core.$procmux$516)
+  185: \u_interface.u_core.running_sum [12] (via $techmap\u_interface.u_core.$procdff$578)
+  186: $techmap\u_interface.u_core.$procmux$514_Y [13] (via $techmap\u_interface.u_core.$procmux$514)
+  187: $techmap\u_interface.u_core.$0\running_sum[23:0] [13] (via $techmap\u_interface.u_core.$procmux$516)
+  188: \u_interface.u_core.running_sum [13] (via $techmap\u_interface.u_core.$procdff$578)
+  189: $techmap\u_interface.u_core.$procmux$514_Y [14] (via $techmap\u_interface.u_core.$procmux$514)
+  190: $techmap\u_interface.u_core.$0\running_sum[23:0] [14] (via $techmap\u_interface.u_core.$procmux$516)
+  191: \u_interface.u_core.running_sum [14] (via $techmap\u_interface.u_core.$procdff$578)
+  192: $techmap\u_interface.u_core.$procmux$514_Y [15] (via $techmap\u_interface.u_core.$procmux$514)
+  193: $techmap\u_interface.u_core.$0\running_sum[23:0] [15] (via $techmap\u_interface.u_core.$procmux$516)
+  194: \u_interface.u_core.running_sum [15] (via $techmap\u_interface.u_core.$procdff$578)
+  195: $techmap\u_interface.u_core.$procmux$514_Y [16] (via $techmap\u_interface.u_core.$procmux$514)
+  196: $techmap\u_interface.u_core.$0\running_sum[23:0] [16] (via $techmap\u_interface.u_core.$procmux$516)
+  197: \u_interface.u_core.running_sum [16] (via $techmap\u_interface.u_core.$procdff$578)
+  198: $techmap\u_interface.u_core.$procmux$514_Y [17] (via $techmap\u_interface.u_core.$procmux$514)
+  199: $techmap\u_interface.u_core.$0\running_sum[23:0] [17] (via $techmap\u_interface.u_core.$procmux$516)
+  200: \u_interface.u_core.running_sum [17] (via $techmap\u_interface.u_core.$procdff$578)
+  201: $techmap\u_interface.u_core.$procmux$514_Y [18] (via $techmap\u_interface.u_core.$procmux$514)
+  202: $techmap\u_interface.u_core.$0\running_sum[23:0] [18] (via $techmap\u_interface.u_core.$procmux$516)
+  203: \u_interface.u_core.running_sum [18] (via $techmap\u_interface.u_core.$procdff$578)
+  204: $techmap\u_interface.u_core.$procmux$514_Y [19] (via $techmap\u_interface.u_core.$procmux$514)
+  205: $techmap\u_interface.u_core.$0\running_sum[23:0] [19] (via $techmap\u_interface.u_core.$procmux$516)
+  206: \u_interface.u_core.running_sum [19] (via $techmap\u_interface.u_core.$procdff$578)
+  207: $techmap\u_interface.u_core.$procmux$514_Y [20] (via $techmap\u_interface.u_core.$procmux$514)
+  208: $techmap\u_interface.u_core.$0\running_sum[23:0] [20] (via $techmap\u_interface.u_core.$procmux$516)
+  209: \u_interface.u_core.running_sum [20] (via $techmap\u_interface.u_core.$procdff$578)
+  210: $techmap\u_interface.u_core.$procmux$514_Y [21] (via $techmap\u_interface.u_core.$procmux$514)
+  211: $techmap\u_interface.u_core.$0\running_sum[23:0] [21] (via $techmap\u_interface.u_core.$procmux$516)
+  212: \u_interface.u_core.running_sum [21] (via $techmap\u_interface.u_core.$procdff$578)
+  213: $techmap\u_interface.u_core.$procmux$514_Y [22] (via $techmap\u_interface.u_core.$procmux$514)
+  214: $techmap\u_interface.u_core.$0\running_sum[23:0] [22] (via $techmap\u_interface.u_core.$procmux$516)
+  215: \u_interface.u_core.running_sum [22] (via $techmap\u_interface.u_core.$procdff$578)
+  216: $techmap\u_interface.u_core.$procmux$514_Y [23] (via $techmap\u_interface.u_core.$procmux$514)
+  217: $techmap\u_interface.u_core.$0\running_sum[23:0] [23] (via $techmap\u_interface.u_core.$procmux$516)
+  218: \u_interface.u_core.running_sum [23] (via $techmap\u_interface.u_core.$procdff$578)
+  219: $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:123$330_Y [1] (via $techmap\u_interface.u_core.$add$/content/compute_core_m3.sv:123$330)
+  220: $techmap\u_interface.u_core.$procmux$510_Y [0] (via $techmap\u_interface.u_core.$procmux$510)
+  221: $techmap\u_interface.u_core.$0\final_sum[23:0] [0] (via $techmap\u_interface.u_core.$procmux$512)
+  222: \u_interface.u_core.final_sum [0] (via $techmap\u_interface.u_core.$procdff$579)
+  223: $techmap\u_interface.u_core.$0\final_sum[23:0] [1] (via $techmap\u_interface.u_core.$procmux$512)
+  224: \u_interface.u_core.final_sum [1] (via $techmap\u_interface.u_core.$procdff$579)
+  225: $techmap\u_interface.u_core.$0\final_sum[23:0] [2] (via $techmap\u_interface.u_core.$procmux$512)
+  226: \u_interface.u_core.final_sum [2] (via $techmap\u_interface.u_core.$procdff$579)
+  227: $techmap\u_interface.u_core.$0\final_sum[23:0] [3] (via $techmap\u_interface.u_core.$procmux$512)
+  228: \u_interface.u_core.final_sum [3] (via $techmap\u_interface.u_core.$procdff$579)
+  229: $techmap\u_interface.u_core.$0\final_sum[23:0] [4] (via $techmap\u_interface.u_core.$procmux$512)
+  230: \u_interface.u_core.final_sum [4] (via $techmap\u_interface.u_core.$procdff$579)
+  231: $techmap\u_interface.u_core.$0\final_sum[23:0] [5] (via $techmap\u_interface.u_core.$procmux$512)
+  232: \u_interface.u_core.final_sum [5] (via $techmap\u_interface.u_core.$procdff$579)
+  233: $techmap\u_interface.u_core.$0\final_sum[23:0] [6] (via $techmap\u_interface.u_core.$procmux$512)
+  234: \u_interface.u_core.final_sum [6] (via $techmap\u_interface.u_core.$procdff$579)
+  235: $techmap\u_interface.u_core.$0\final_sum[23:0] [7] (via $techmap\u_interface.u_core.$procmux$512)
+  236: \u_interface.u_core.final_sum [7] (via $techmap\u_interface.u_core.$procdff$579)
+  237: $techmap\u_interface.u_core.$0\final_sum[23:0] [8] (via $techmap\u_interface.u_core.$procmux$512)
+  238: \u_interface.u_core.final_sum [8] (via $techmap\u_interface.u_core.$procdff$579)
+  239: $techmap\u_interface.u_core.$0\final_sum[23:0] [9] (via $techmap\u_interface.u_core.$procmux$512)
+  240: \u_interface.u_core.final_sum [9] (via $techmap\u_interface.u_core.$procdff$579)
+  241: $techmap\u_interface.u_core.$0\final_sum[23:0] [10] (via $techmap\u_interface.u_core.$procmux$512)
+  242: \u_interface.u_core.final_sum [10] (via $techmap\u_interface.u_core.$procdff$579)
+  243: $techmap\u_interface.u_core.$0\final_sum[23:0] [11] (via $techmap\u_interface.u_core.$procmux$512)
+  244: \u_interface.u_core.final_sum [11] (via $techmap\u_interface.u_core.$procdff$579)
+  245: $techmap\u_interface.u_core.$0\final_sum[23:0] [12] (via $techmap\u_interface.u_core.$procmux$512)
+  246: \u_interface.u_core.final_sum [12] (via $techmap\u_interface.u_core.$procdff$579)
+  247: $techmap\u_interface.u_core.$0\final_sum[23:0] [13] (via $techmap\u_interface.u_core.$procmux$512)
+  248: \u_interface.u_core.final_sum [13] (via $techmap\u_interface.u_core.$procdff$579)
+  249: $techmap\u_interface.u_core.$0\final_sum[23:0] [14] (via $techmap\u_interface.u_core.$procmux$512)
+  250: \u_interface.u_core.final_sum [14] (via $techmap\u_interface.u_core.$procdff$579)
+  251: $techmap\u_interface.u_core.$0\final_sum[23:0] [15] (via $techmap\u_interface.u_core.$procmux$512)
+  252: \u_interface.u_core.final_sum [15] (via $techmap\u_interface.u_core.$procdff$579)
+  253: $techmap\u_interface.u_core.$0\final_sum[23:0] [16] (via $techmap\u_interface.u_core.$procmux$512)
+  254: \u_interface.u_core.final_sum [16] (via $techmap\u_interface.u_core.$procdff$579)
+  255: $techmap\u_interface.u_core.$0\final_sum[23:0] [17] (via $techmap\u_interface.u_core.$procmux$512)
+  256: \u_interface.u_core.final_sum [17] (via $techmap\u_interface.u_core.$procdff$579)
+  257: $techmap\u_interface.u_core.$0\final_sum[23:0] [18] (via $techmap\u_interface.u_core.$procmux$512)
+  258: \u_interface.u_core.final_sum [18] (via $techmap\u_interface.u_core.$procdff$579)
+  259: $techmap\u_interface.u_core.$0\final_sum[23:0] [19] (via $techmap\u_interface.u_core.$procmux$512)
+  260: \u_interface.u_core.final_sum [19] (via $techmap\u_interface.u_core.$procdff$579)
+  261: $techmap\u_interface.u_core.$0\final_sum[23:0] [20] (via $techmap\u_interface.u_core.$procmux$512)
+  262: \u_interface.u_core.final_sum [20] (via $techmap\u_interface.u_core.$procdff$579)
+  263: $techmap\u_interface.u_core.$0\final_sum[23:0] [21] (via $techmap\u_interface.u_core.$procmux$512)
+  264: \u_interface.u_core.final_sum [21] (via $techmap\u_interface.u_core.$procdff$579)
+  265: $techmap\u_interface.u_core.$0\final_sum[23:0] [22] (via $techmap\u_interface.u_core.$procmux$512)
+  266: \u_interface.u_core.final_sum [22] (via $techmap\u_interface.u_core.$procdff$579)
+  267: $techmap\u_interface.u_core.$0\final_sum[23:0] [23] (via $techmap\u_interface.u_core.$procmux$512)
+  268: \u_interface.u_core.final_sum [23] (via $techmap\u_interface.u_core.$procdff$579)
+  269: $techmap\u_interface.u_core.$ne$/content/compute_core_m3.sv:138$341_Y (via $techmap\u_interface.u_core.$ne$/content/compute_core_m3.sv:138$341)
+  270: \u_interface.u_core.norm_beat [0] (via $techmap\u_interface.u_core.$ternary$/content/compute_core_m3.sv:138$345)
+  271: $techmap\u_interface.u_core.$0\pipe_data[4][63:0] [0] (via $techmap\u_interface.u_core.$ternary$/content/compute_core_m3.sv:152$383)
+  272: \u_interface.u_core.pipe_data[4] [0] (via $techmap\u_interface.u_core.$procdff$575)
+  273: \u_interface.u_core.pipe_data[5] [0] (via $techmap\u_interface.u_core.$procdff$571)
+  274: \u_interface.u_core.pipe_data[6] [0] (via $techmap\u_interface.u_core.$procdff$565)
+  275: \u_interface.u_core.pipe_data[7] [0] (via $techmap\u_interface.u_core.$procdff$561)
+
+Warnings: 649 unique messages, 91944 total
+End of script. Logfile hash: 40dbf23ba9
+CPU: user 1.04s system 0.54s, MEM: 27.62 MB total, 21.75 MB resident
+Yosys 0.9 (git sha1 1979e0b)
+Time spent: 75% 1x ltp (1 sec), 6% 5x opt_clean (0 sec), ...
