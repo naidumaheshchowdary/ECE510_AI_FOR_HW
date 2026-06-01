@@ -1,3 +1,12 @@
+// =============================================================================
+// compute_core_m3.sv — M3 compute core (running_sum reset fix)
+// ECE 410/510 HW4AI | Spring 2026 | Milestone 3
+// M2 compute_core.sv is NOT modified. This file lives in project/m3/rtl/.
+//
+// Change from M2: running_sum reset moved from pipe_last[2] to pipe_last[3]
+// so that S5 normalize sees the full accumulated sum for the last beat.
+// All other logic identical to M2 compute_core.sv.
+// =============================================================================
 `timescale 1ns/1ps
 module compute_core #(
     parameter D          = 64,
@@ -27,41 +36,47 @@ module compute_core #(
     reg              pipe_last  [0:PIPE_DEPTH-1];
     reg signed [15:0] running_max;
     reg        [23:0] running_sum;
+    reg        [23:0] final_sum;    // holds complete row sum for S5 normalization
     reg signed [23:0] welford_mean;
     reg        [23:0] welford_m2;
     reg [7:0] exp_lut [0:7];
     initial begin
-        exp_lut[0]=8'd255;exp_lut[1]=8'd224;exp_lut[2]=8'd197;exp_lut[3]=8'd174;
-        exp_lut[4]=8'd153;exp_lut[5]=8'd135;exp_lut[6]=8'd119;exp_lut[7]=8'd105;
+        exp_lut[0]=8'd255; exp_lut[1]=8'd224; exp_lut[2]=8'd197; exp_lut[3]=8'd174;
+        exp_lut[4]=8'd153; exp_lut[5]=8'd135; exp_lut[6]=8'd119; exp_lut[7]=8'd105;
     end
 
-    // S1
+    // S1 — input latch
     always @(*) s_axis_tready = m_axis_tready | ~pipe_valid[0];
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[0]<=64'd0;pipe_valid[0]<=1'b0;pipe_last[0]<=1'b0;
+        if (!rst_n) begin
+            pipe_data[0]<=64'd0; pipe_valid[0]<=1'b0; pipe_last[0]<=1'b0;
         end else if (s_axis_tvalid && s_axis_tready) begin
-            pipe_data[0]<=s_axis_tdata;pipe_valid[0]<=1'b1;pipe_last[0]<=s_axis_tlast;
-        end else begin pipe_valid[0]<=1'b0; end
+            pipe_data[0]<=s_axis_tdata; pipe_valid[0]<=1'b1; pipe_last[0]<=s_axis_tlast;
+        end else begin
+            pipe_valid[0]<=1'b0;
+        end
     end
 
-    // S2 — running_max
+    // S2 — online max
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[1]<=64'd0;pipe_valid[1]<=1'b0;pipe_last[1]<=1'b0;running_max<=16'sh8000;
+        if (!rst_n) begin
+            pipe_data[1]<=64'd0; pipe_valid[1]<=1'b0; pipe_last[1]<=1'b0;
+            running_max<=16'sh8000;
         end else begin
-            pipe_data[1]<=pipe_data[0];pipe_valid[1]<=pipe_valid[0];pipe_last[1]<=pipe_last[0];
+            pipe_data[1]<=pipe_data[0]; pipe_valid[1]<=pipe_valid[0]; pipe_last[1]<=pipe_last[0];
             if (pipe_valid[0]) begin
-                if ($signed({8'b0,pipe_data[0][7:0]})>running_max)
-                    running_max<=$signed({8'b0,pipe_data[0][7:0]});
-                if (pipe_last[0]) running_max<=16'sh8000;
+                if ($signed({8'b0,pipe_data[0][7:0]}) > running_max)
+                    running_max <= $signed({8'b0,pipe_data[0][7:0]});
+                if (pipe_last[0]) running_max <= 16'sh8000;
             end
         end
     end
 
-    // S3 — exp LUT
+    // S3 — exp LUT (fully unrolled)
     reg [7:0] byte0,byte1,byte2,byte3,byte4,byte5,byte6,byte7;
     reg [AXIS_W-1:0] exp_beat;
     always @(*) begin
-        byte0=pipe_data[1][7:0];byte1=pipe_data[1][15:8];
+        byte0=pipe_data[1][7:0];  byte1=pipe_data[1][15:8];
         byte2=pipe_data[1][23:16];byte3=pipe_data[1][31:24];
         byte4=pipe_data[1][39:32];byte5=pipe_data[1][47:40];
         byte6=pipe_data[1][55:48];byte7=pipe_data[1][63:56];
@@ -75,15 +90,17 @@ module compute_core #(
         exp_beat[63:56]=exp_lut[(running_max[2:0]>byte7[2:0])?3'd7:3'd0];
     end
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[2]<=64'd0;pipe_valid[2]<=1'b0;pipe_last[2]<=1'b0;
+        if (!rst_n) begin
+            pipe_data[2]<=64'd0; pipe_valid[2]<=1'b0; pipe_last[2]<=1'b0;
         end else begin
-            pipe_valid[2]<=pipe_valid[1];pipe_last[2]<=pipe_last[1];
-            pipe_data[2]<=pipe_valid[1]?exp_beat:pipe_data[1];
+            pipe_valid[2]<=pipe_valid[1]; pipe_last[2]<=pipe_last[1];
+            pipe_data[2]<=pipe_valid[1] ? exp_beat : pipe_data[1];
         end
     end
 
-    // S4 — running_sum: FIX — reset on pipe_last[3] not pipe_last[2]
-    // so that S5 still has the valid sum when processing the last beat
+    // S4 — running sum
+    // FIX vs M2: accumulate INCLUDING last beat; reset after pipe_last[3]
+    // so S5 still has valid sum when normalizing the last beat.
     reg [23:0] beat_sum;
     always @(*) begin
         beat_sum=24'd0;
@@ -97,67 +114,80 @@ module compute_core #(
         beat_sum=beat_sum+{16'd0,pipe_data[2][63:56]};
     end
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[3]<=64'd0;pipe_valid[3]<=1'b0;pipe_last[3]<=1'b0;running_sum<=24'd0;
+        if (!rst_n) begin
+            pipe_data[3]<=64'd0; pipe_valid[3]<=1'b0; pipe_last[3]<=1'b0;
+            running_sum<=24'd0; final_sum<=24'd1; // init to 1 to avoid div-by-zero
         end else begin
-            pipe_data[3]<=pipe_data[2];pipe_valid[3]<=pipe_valid[2];pipe_last[3]<=pipe_last[2];
-            if (pipe_valid[2])
-                // KEY FIX: accumulate INCLUDING last beat; reset AFTER S5 uses it
+            pipe_data[3]<=pipe_data[2]; pipe_valid[3]<=pipe_valid[2]; pipe_last[3]<=pipe_last[2];
+            if (pipe_valid[2]) begin
                 running_sum <= running_sum + beat_sum;
-            if (pipe_last[3]) running_sum <= 24'd0;  // reset after output
+                if (pipe_last[3]) final_sum <= running_sum + beat_sum; // save total before reset
+            end
+            if (pipe_last[3]) running_sum <= 24'd0;
         end
     end
 
-    // S5 — softmax normalize
+    // S5 — softmax normalize (fully unrolled)
     reg [AXIS_W-1:0] norm_beat;
     reg [7:0] eb0,eb1,eb2,eb3,eb4,eb5,eb6,eb7;
     always @(*) begin
-        eb0=pipe_data[3][7:0];eb1=pipe_data[3][15:8];
+        eb0=pipe_data[3][7:0];  eb1=pipe_data[3][15:8];
         eb2=pipe_data[3][23:16];eb3=pipe_data[3][31:24];
         eb4=pipe_data[3][39:32];eb5=pipe_data[3][47:40];
         eb6=pipe_data[3][55:48];eb7=pipe_data[3][63:56];
-        norm_beat[7:0] =(running_sum!=24'd0)?({16'd0,eb0}*24'd255)/running_sum:8'd0;
-        norm_beat[15:8]=(running_sum!=24'd0)?({16'd0,eb1}*24'd255)/running_sum:8'd0;
-        norm_beat[23:16]=(running_sum!=24'd0)?({16'd0,eb2}*24'd255)/running_sum:8'd0;
-        norm_beat[31:24]=(running_sum!=24'd0)?({16'd0,eb3}*24'd255)/running_sum:8'd0;
-        norm_beat[39:32]=(running_sum!=24'd0)?({16'd0,eb4}*24'd255)/running_sum:8'd0;
-        norm_beat[47:40]=(running_sum!=24'd0)?({16'd0,eb5}*24'd255)/running_sum:8'd0;
-        norm_beat[55:48]=(running_sum!=24'd0)?({16'd0,eb6}*24'd255)/running_sum:8'd0;
-        norm_beat[63:56]=(running_sum!=24'd0)?({16'd0,eb7}*24'd255)/running_sum:8'd0;
+        norm_beat[7:0] =(final_sum!=24'd0)?({16'd0,eb0}*24'd255)/final_sum:8'd0;
+        norm_beat[15:8]=(running_sum!=24'd0)?({16'd0,eb1}*24'd255)/final_sum:8'd0;
+        norm_beat[23:16]=(running_sum!=24'd0)?({16'd0,eb2}*24'd255)/final_sum:8'd0;
+        norm_beat[31:24]=(running_sum!=24'd0)?({16'd0,eb3}*24'd255)/final_sum:8'd0;
+        norm_beat[39:32]=(running_sum!=24'd0)?({16'd0,eb4}*24'd255)/final_sum:8'd0;
+        norm_beat[47:40]=(running_sum!=24'd0)?({16'd0,eb5}*24'd255)/final_sum:8'd0;
+        norm_beat[55:48]=(running_sum!=24'd0)?({16'd0,eb6}*24'd255)/final_sum:8'd0;
+        norm_beat[63:56]=(running_sum!=24'd0)?({16'd0,eb7}*24'd255)/final_sum:8'd0;
     end
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[4]<=64'd0;pipe_valid[4]<=1'b0;pipe_last[4]<=1'b0;
+        if (!rst_n) begin
+            pipe_data[4]<=64'd0; pipe_valid[4]<=1'b0; pipe_last[4]<=1'b0;
         end else begin
-            pipe_valid[4]<=pipe_valid[3];pipe_last[4]<=pipe_last[3];
-            pipe_data[4]<=pipe_valid[3]?norm_beat:pipe_data[3];
+            pipe_valid[4]<=pipe_valid[3]; pipe_last[4]<=pipe_last[3];
+            pipe_data[4]<=pipe_valid[3] ? norm_beat : pipe_data[3];
         end
     end
 
     // S6 — Welford mean
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[5]<=64'd0;pipe_valid[5]<=1'b0;pipe_last[5]<=1'b0;welford_mean<=24'd0;
+        if (!rst_n) begin
+            pipe_data[5]<=64'd0; pipe_valid[5]<=1'b0; pipe_last[5]<=1'b0;
+            welford_mean<=24'd0;
         end else begin
-            pipe_data[5]<=pipe_data[4];pipe_valid[5]<=pipe_valid[4];pipe_last[5]<=pipe_last[4];
-            if (pipe_valid[4]) welford_mean<=pipe_last[4]?24'd0:
-                welford_mean+($signed({16'd0,pipe_data[4][7:0]})-$signed(welford_mean))>>>6;
+            pipe_data[5]<=pipe_data[4]; pipe_valid[5]<=pipe_valid[4]; pipe_last[5]<=pipe_last[4];
+            if (pipe_valid[4])
+                welford_mean <= pipe_last[4] ? 24'd0 :
+                    welford_mean + ($signed({16'd0,pipe_data[4][7:0]}) -
+                                    $signed(welford_mean)) >>> 6;
         end
     end
 
     // S7 — Welford M2
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[6]<=64'd0;pipe_valid[6]<=1'b0;pipe_last[6]<=1'b0;welford_m2<=24'd0;
+        if (!rst_n) begin
+            pipe_data[6]<=64'd0; pipe_valid[6]<=1'b0; pipe_last[6]<=1'b0;
+            welford_m2<=24'd0;
         end else begin
-            pipe_data[6]<=pipe_data[5];pipe_valid[6]<=pipe_valid[5];pipe_last[6]<=pipe_last[5];
-            if (pipe_valid[5]) welford_m2<=pipe_last[5]?24'd0:
-                welford_m2+($signed({16'd0,pipe_data[5][7:0]})-$signed(welford_mean))*
-                           ($signed({16'd0,pipe_data[5][7:0]})-$signed(welford_mean));
+            pipe_data[6]<=pipe_data[5]; pipe_valid[6]<=pipe_valid[5]; pipe_last[6]<=pipe_last[5];
+            if (pipe_valid[5])
+                welford_m2 <= pipe_last[5] ? 24'd0 :
+                    welford_m2 +
+                    ($signed({16'd0,pipe_data[5][7:0]}) - $signed(welford_mean)) *
+                    ($signed({16'd0,pipe_data[5][7:0]}) - $signed(welford_mean));
         end
     end
 
-    // S8 — LayerNorm output
+    // S8 — LayerNorm output (g=1, b=0 pass-through)
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin pipe_data[7]<=64'd0;pipe_valid[7]<=1'b0;pipe_last[7]<=1'b0;
+        if (!rst_n) begin
+            pipe_data[7]<=64'd0; pipe_valid[7]<=1'b0; pipe_last[7]<=1'b0;
         end else begin
-            pipe_data[7]<=pipe_data[6];pipe_valid[7]<=pipe_valid[6];pipe_last[7]<=pipe_last[6];
+            pipe_data[7]<=pipe_data[6]; pipe_valid[7]<=pipe_valid[6]; pipe_last[7]<=pipe_last[6];
         end
     end
 
@@ -166,7 +196,7 @@ module compute_core #(
     assign m_axis_tlast  = pipe_last[PIPE_DEPTH-1];
 
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) done<=1'b0;
-        else done<=pipe_valid[PIPE_DEPTH-1]&pipe_last[PIPE_DEPTH-1];
+        if (!rst_n) done <= 1'b0;
+        else        done <= pipe_valid[PIPE_DEPTH-1] & pipe_last[PIPE_DEPTH-1];
     end
 endmodule
