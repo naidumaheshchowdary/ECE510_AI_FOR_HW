@@ -1,71 +1,58 @@
 # Critical Path Analysis
 ## ECE 410/510 HW4AI | Spring 2026 | Milestone 3
-## Design: top (interface + compute_core_m3)
+## Design: top (interface_mod_m3 + compute_core_m3)
+## Synthesis hash: 40dbf23ba9
 
 ---
 
 ## Critical Path Identification
 
-**Start register:** `u_interface.u_core.running_sum[23:0]`
-The 24-bit softmax denominator accumulator register (`$procdff$572`),
-clocked on the rising edge of `clk` inside `compute_core_m3`.
+**Start register:** `u_interface.u_core.final_sum[23:0]`
+The 24-bit softmax denominator register (`$procdff$579`), clocked on
+the rising edge of `clk`. This register captures the complete row sum
+at the end of each 8-beat input row (when `pipe_last[3]` fires), and
+holds it stable while S5 normalizes all 8 output beats.
 
 **End register:** `u_interface.u_core.pipe_data[4][63:0]`
-The Stage 5 output register (`$procdff$569`), capturing the normalized
+The Stage 5 output register (`$procdff$575`), capturing the normalized
 softmax result after division.
 
-**Logic stages between start and end (per-cycle combinational path):**
+**Logic stages between start and end register:**
 
-1. `running_sum[23:0]` DFF output (24 bits)
-2. `$ne` cell (`$ne$/content/compute_core_m3.sv:118$339`) — 24-bit
-   not-equal to zero, produces 1-bit zero-gate enable `_057_`
-3. 8× `$div` cells — one per output byte:
-   `norm_beat[7:0]  = ({16'd0,eb0} * 24'd255) / running_sum`
-   through
-   `norm_beat[63:56] = ({16'd0,eb7} * 24'd255) / running_sum`
-   These 8 divisions are the dominant delay (~8-12 ns each on SKY130 HD)
-4. 8× `$ternary` — zero-gate: `running_sum!=0 ? div_result : 8'd0`
-   (node 220: `norm_beat[56]` via `$ternary$/content/compute_core_m3.sv:125$378`)
+1. `final_sum[23:0]` DFF output (24 bits, node 268 in LTP)
+2. `$ne` cell (`$ne$/content/compute_core_m3.sv:138$341`) — 24-bit
+   not-equal to zero, produces zero-gate enable (~0.3 ns)
+3. 8× `$div` cells — one per output byte, each computing
+   `({16'd0, eb_n} * 24'd255) / final_sum` (~8–12 ns, BOTTLENECK)
+4. 8× `$ternary` — zero-gate: `final_sum!=0 ? div_result : 8'd0`
+   (node 270: `norm_beat[0]` via `$ternary$138$345`)
 5. `$ternary` mux — `pipe_valid[3] ? norm_beat : pipe_data[3]`
-   (node 221: `$ternary$/content/compute_core_m3.sv:131$381`)
-6. `pipe_data[4][63:0]` DFF setup time
+   (node 271: `$ternary$152$383`)
+6. `pipe_data[4][63:0]` DFF setup time (~0.2 ns)
 
 **Why this is the critical path:**
-Integer division in hardware maps to an iterative subtraction circuit
-(non-restoring divider) requiring approximately 24 gate levels for a
-24-bit divisor. Each `$div` cell on SKY130 HD at TT/25C/1.8V is
-estimated at 8–12 ns. Since all 8 divisions share the same `running_sum`
-divisor and operate in parallel, the critical path delay equals one
-`$div` plus surrounding logic — approximately 9–13 ns total.
+Integer division maps to an iterative subtraction circuit (~24 gate
+levels for a 24-bit divisor) on SKY130 HD. Each `$div` cell is
+estimated at 8–12 ns at TT/25C/1.8V. All 8 divisions share the same
+`final_sum` divisor and run in parallel, so the path delay equals
+one `$div` plus surrounding logic: approximately **9–13 ns total**.
+This exceeds the 10 ns target clock period and fails at 200 MHz (5 ns).
 
-At 10.0 ns (100 MHz) this is marginal. At 5.0 ns (200 MHz) it fails
-by 4–8 ns. Synthesis confirmed with Yosys 0.9 LTP depth = 225 nodes.
+**What changed vs previous run:**
+The `final_sum` register was added to fix a Verilog non-blocking
+assignment race where both `running_sum <= running_sum + beat_sum`
+and `running_sum <= 24'd0` fired on the same clock edge — the reset
+always won, making beat 7 produce zero output. The fix captures the
+complete accumulated sum into `final_sum` before the reset fires.
+This adds 50 nodes to the LTP (nodes 219–268: the `final_sum` DFF
+chain) and increases total LTP from 225 to 275.
 
 **What would shorten it:**
-Replace all 8 `$div` operations with a reciprocal multiply:
+Replace `eb / final_sum` with a reciprocal multiply:
 ```systemverilog
-// Compute reciprocal once per row (in S4, when pipe_last arrives)
-reg [15:0] recip;
-always @(posedge clk) begin
-    if (pipe_last[3] && running_sum != 0)
-        recip <= 16'hFFFF / running_sum[15:0];
-end
-
-// Use multiply-shift instead of division in S5
-norm_beat[7:0] = (eb0 * recip) >> 8;
+wire [15:0] recip = 16'hFFFF / final_sum[15:0];  // computed once per row
+norm_byte = (eb * recip) >> 8;                    // per byte
 ```
-This eliminates all 8 `$div` cells (~300 µm² each, ~8-12 ns delay)
-and replaces them with 8 `$mul` + shift (~50 µm², ~2.5 ns), reducing
-the critical path to approximately 3 ns and enabling 200 MHz closure.
-This is the primary M4 optimization.
-
----
-
-## LTP Context
-
-The Yosys LTP reported 225 total nodes through the full integrated design.
-This is 33 nodes more than the compute_core-alone path (192 nodes in CF07),
-because the flattened `top` includes the reset propagation path through
-`pipe_valid[0]` → `tready` → `logic_and` at the pipeline entry.
-The per-cycle critical path (nodes 148–222) is identical in both cases —
-it is the `running_sum` DFF to `pipe_data[4]` DFF segment that limits timing.
+This eliminates all 8 `$div` cells and reduces the critical path
+from ~9–13 ns to ~2.5 ns, enabling 200 MHz timing closure. This is
+the primary M4 optimization task (see `project/remaining_tasks.md`).
