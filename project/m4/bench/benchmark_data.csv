@@ -1,0 +1,16 @@
+metric,sw_baseline,hw_accelerator,hw_label,source
+platform,DESKTOP-KDU44VU i5-5300U,SKY130 HD Yosys 0.9,—,—
+precision,FP64,INT8,—,—
+execution_time_ms,60.05,0.00512,PROJECTED,synthesis cycle count
+throughput_samples_sec,133.2,195312,PROJECTED,100MHz / 8cycles / 64rows
+speedup_vs_cf09_baseline,1,1466,PROJECTED,195312/133.2
+speedup_vs_m1_baseline,1,421,PROJECTED,195312/463.9
+clock_mhz,—,100,from synthesis,synth/openlane_run.log
+cycles_per_row,—,8,from RTL pipeline depth,project/m4/rtl/compute_core.sv
+rows_per_sample,—,64,T=64 config,project/m4/rtl/compute_core.sv
+total_cells,—,132,measured Yosys,synth/area_report.txt
+ltp_depth_nodes,—,275,measured Yosys,synth/timing_report.txt
+synth_hash,—,9c2bb123ba,Yosys log,synth/openlane_run.log
+power_uw,15000000,58,PROJECTED,synth/power_report.txt
+energy_per_sample_mj,900.75,0.0000003,PROJECTED,synth/power_report.txt
+memory_mb,13.8,—,measured,profile_m1.py

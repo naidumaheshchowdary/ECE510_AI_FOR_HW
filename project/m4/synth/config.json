@@ -1,0 +1,14 @@
+{
+  "DESIGN_NAME": "top",
+  "VERILOG_FILES": [
+    "project/m4/rtl/top.sv",
+    "project/m4/rtl/interface.sv",
+    "project/m4/rtl/compute_core.sv"
+  ],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 10.0,
+  "PDK": "sky130A",
+  "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+  "SYNTH_STRATEGY": "DELAY 0",
+  "NOTE": "M4 final. Clock 100MHz. $div critical path ~9-13ns. M4 plan: reciprocal multiply."
+}

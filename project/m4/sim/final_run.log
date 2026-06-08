@@ -1,0 +1,29 @@
+VCD info: dumpfile m3_cosim.vcd opened for output.
+[REGION 1] Host write via AXI4-Lite
+  AXI4-Lite config writes done
+[REGION 2] Streaming 8 input beats (d=64 row)
+  Input beat 0: 0x0a141e283c465064  tready=1
+  Input beat 1: 0x0a141e283c465064  tready=1
+  Input beat 2: 0x0a141e283c465064  tready=1
+  Input beat 3: 0x0a141e283c465064  tready=1
+  Input beat 4: 0x0a141e283c465064  tready=1
+  Input beat 5: 0x0a141e283c465064  tready=1
+  Input beat 6: 0x0a141e283c465064  tready=1
+  Input beat 7: 0x0a141e283c465064  tready=1
+[REGION 3] Collecting output (pipeline latency = 8 cycles)
+  Output beat 0: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 1: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 2: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 3: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 4: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 5: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 6: 0x9701019701019701  last=0  [NONZERO=1]
+  Output beat 7: 0x0101010101010101  last=1  [NONZERO=1]
+  STATUS = 0x00000000  done=0
+
+=== M3 CO-SIMULATION RESULTS ===
+Beats PASS : 8 / 8
+Beats MISS : 0 / 8
+RESULT: PASS
+================================
+tb\tb_top.sv:187: $finish called at 202500 (1ps)

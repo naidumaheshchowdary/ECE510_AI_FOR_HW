@@ -1,0 +1,52 @@
+Area Report — top (M4 final: compute_core + interface_mod)
+Tool   : Yosys 0.9 (git sha1 1979e0b)
+Target : SKY130 HD (generic gate mapping)
+Clock  : 10.0 ns (100 MHz)
+Hash   : 9c2bb123ba
+Date   : Spring 2026 | ECE 410/510 HW4AI M4
+
+=== top ===
+
+   Number of wires:                211
+   Number of wire bits:           3105
+   Number of public wires:         121
+   Number of public wire bits:    1648
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                132
+     $add                            8
+     $adff                          39
+     $and                            1
+     $div                            8   ← critical path bottleneck
+     $eq                             7
+     $gt                             9
+     $logic_and                      2
+     $logic_not                      2
+     $mem                            1
+     $mul                            8
+     $mux                           43
+     $not                            1
+     $or                             1
+     $pmux                           1
+     $reduce_bool                    1
+
+Chip area: 0.000000 um^2
+(SKY130 liberty not mapped — Yosys 0.9 generic flow)
+
+=== ESTIMATED AREA (SKY130 HD TT/25C/1.8V) ===
+
+   $adff  x39  ~  8 um^2  =   312 um^2
+   $mux   x43  ~  4 um^2  =   172 um^2
+   $div   x8   ~300 um^2  =  2400 um^2  (dominant, ~65% of total)
+   $mul   x8   ~ 50 um^2  =   400 um^2
+   $add   x8   ~ 20 um^2  =   160 um^2
+   $gt    x9   ~ 15 um^2  =   135 um^2
+   $eq    x7   ~ 10 um^2  =    70 um^2
+   Other  x10  ~  4 um^2  =    40 um^2
+                           ----------
+   Total estimate          ~  3689 um^2
+   Range                    3200-5200 um^2
+
+Warnings: 649 unique, 91944 total
+CPU: user 0.96s  system 0.52s  MEM: 28.12 MB

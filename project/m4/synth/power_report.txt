@@ -1,0 +1,35 @@
+Power Estimation Report — top (M4 final)
+Tool   : OpenLane 2 power estimation (attempted, incomplete)
+Hash   : 9c2bb123ba
+Date   : Spring 2026 | ECE 410/510 HW4AI M4
+
+STATUS: INCOMPLETE
+  Reason: Yosys 0.9 generic gate mapping produces Chip area = 0.
+  Power requires mapped SKY130 liberty cells + post-route parasitics.
+  Full OpenLane 2 Docker requires >8 GB RAM (host machine: 4 GB i5-5300U).
+
+STATIC ESTIMATE (SKY130 HD TT/25C/1.8V):
+  $adff  x39  x  2 nW =  78 nW
+  $mux   x43  x  1 nW =  43 nW
+  $div   x8   x100 nW = 800 nW  (dominant)
+  Other  x42  x  1 nW =  42 nW
+  Total leakage        ~ 963 nW
+
+DYNAMIC ESTIMATE at 100 MHz (alpha=0.3):
+  P = 0.3 x 132cells x 5fF x (1.8V)^2 x 100MHz
+    = ~64.2 uW
+
+TOTAL ESTIMATE: ~65.1 uW at 100 MHz
+
+ENERGY PER SAMPLE:
+  Time per sample = 64 rows x 8 cycles/row / 100 MHz = 5.12 us
+  Energy = 65.1 uW x 5.12 us = 0.333 nJ per sample (PROJECTED)
+
+SW BASELINE ENERGY (measured):
+  CPU power = 15 W, time = 60.05 ms
+  Energy = 15 W x 0.06005 s = 900.75 mJ per sample
+
+ENERGY IMPROVEMENT: 900.75 mJ / 0.333 nJ ~ 2.7 x 10^9 x (PROJECTED)
+
+M4 NOTE: Replacing 8x $div with reciprocal multiply would reduce
+  leakage by ~800 nW and dynamic power by ~30%.
