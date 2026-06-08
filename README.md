@@ -1,10 +1,6 @@
 # ECE510: Hardware for Artificial Intelligence and Machine Learning 
 
-
-
-## Project Title : Softmax + LayerNorm fused accelerator
-
-# ECE 410/510 HW4AI — Fused Softmax + LayerNorm Accelerator
+## Project Title : Fused Softmax + LayerNorm Accelerator
 ## **Author: Mahesh Naidu| Spring 2026 | Portland State University| Prof. Christof Teuscher**
 
 This repository contains the complete Milestone 4 submission for the Hardware
