@@ -1,7 +1,7 @@
-# Project Milestone 4 — README
+# Project Milestone 4 - README
 ## ECE 410/510 HW4AI | Spring 2026
 ## Fused Softmax + LayerNorm Accelerator
-## Author: Mahesh Chowdary Naidu
+## Author: Mahesh Naidu
 
 ---
 
